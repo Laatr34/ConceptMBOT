@@ -96,7 +96,9 @@ def calculate_current(power_w: float | None, voltage_v: float | None) -> CalcRes
     """Calculate DC current from power and voltage: I = P / U (A)."""
 
     inputs = {"power_w": power_w, "voltage_v": voltage_v}
-    missing = [field for field, value in (("power_w", power_w), ("voltage_v", voltage_v)) if value is None]
+    missing = [
+        field for field, value in (("power_w", power_w), ("voltage_v", voltage_v)) if value is None
+    ]
     if missing:
         return CalcResult.not_evaluable(
             name="electrical.current",
@@ -198,11 +200,7 @@ def calculate_regulator_power_loss(
     """Calculate regulator loss: Ploss = Pout × (1 / η − 1) (W)."""
 
     inputs = {"output_power_w": output_power_w, "efficiency": efficiency}
-    missing = [
-        field
-        for field, value in inputs.items()
-        if value is None
-    ]
+    missing = [field for field, value in inputs.items() if value is None]
     if missing:
         return CalcResult.not_evaluable(
             name="electrical.regulator_power_loss",
