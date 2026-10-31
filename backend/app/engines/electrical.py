@@ -242,9 +242,7 @@ def calculate_rail_current(
 
     inputs: dict[str, float | None] = {"rail_voltage_v": voltage_v}
     missing: list[str] = []
-    if voltage_v is None:
-        missing.append("rail_voltage_v")
-    else:
+    if voltage_v is not None:
         require_positive("rail_voltage_v", voltage_v)
 
     total_current_a = 0.0

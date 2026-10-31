@@ -140,3 +140,12 @@ def test_unconfigured_limits_are_reported_as_unchecked() -> None:
     )
     assert {item.severity for item in anomalies} == {AnomalySeverity.INFO}
     assert len(anomalies) == 3
+
+
+def test_rail_current_does_not_need_voltage_when_all_currents_are_known() -> None:
+    result = calculate_rail_current(
+        None,
+        [RailLoad(name="controller", current_a=0.75)],
+    )
+    assert result.value == pytest.approx(0.75)
+    assert result.status is ResultStatus.THEORETICAL
