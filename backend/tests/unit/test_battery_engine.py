@@ -93,7 +93,7 @@ def test_zero_average_power_is_rejected() -> None:
 
 
 @pytest.mark.parametrize("count", [0, -1, 2.5, True])
-def test_invalid_series_count_is_rejected(count: int | float | bool) -> None:
+def test_invalid_series_count_is_rejected(count: float | bool) -> None:
     with pytest.raises(InvalidInputError):
         calculate_pack_voltage(3.7, count)  # type: ignore[arg-type]
 

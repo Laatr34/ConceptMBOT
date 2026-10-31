@@ -10,7 +10,6 @@ from __future__ import annotations
 from app.domain.calc_result import CalcResult, Confidence, ResultStatus
 from app.domain.units import InvalidInputError, require_non_negative, require_positive
 
-
 AUTONOMY_LIMITS = [
     "Peukert effect is not modeled without a battery-specific exponent and test conditions.",
     "Temperature and battery aging are not modeled without measured battery-specific data.",
