@@ -10,8 +10,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.domain.components import (
+    ComponentCategory,
     ComponentCreate,
     ComponentDocument,
+    ComponentStatus,
     ComponentSummary,
     ComponentUpdate,
     migrate_component_document,
@@ -35,8 +37,8 @@ def _summary(record: ComponentRecord) -> ComponentSummary:
     return ComponentSummary(
         id=UUID(record.id),
         name=record.name,
-        category=record.category,
-        status=record.status,
+        category=ComponentCategory(record.category),
+        status=ComponentStatus(record.status),
         manufacturer=record.document.get("manufacturer"),
         model=record.document.get("model"),
         revision=record.revision,
