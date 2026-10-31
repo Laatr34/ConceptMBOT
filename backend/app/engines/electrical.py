@@ -96,11 +96,7 @@ def calculate_current(power_w: float | None, voltage_v: float | None) -> CalcRes
     """Calculate DC current from power and voltage: I = P / U (A)."""
 
     inputs = {"power_w": power_w, "voltage_v": voltage_v}
-    missing = [
-        field
-        for field, value in (("power_w", power_w), ("voltage_v", voltage_v))
-        if value is None
-    ]
+    missing = [field for field, value in (("power_w", power_w), ("voltage_v", voltage_v)) if value is None]
     if missing:
         return CalcResult.not_evaluable(
             name="electrical.current",
@@ -121,9 +117,7 @@ def calculate_current(power_w: float | None, voltage_v: float | None) -> CalcRes
     )
 
 
-def calculate_voltage_drop(
-    current_a: float | None, resistance_ohm: float | None
-) -> CalcResult:
+def calculate_voltage_drop(current_a: float | None, resistance_ohm: float | None) -> CalcResult:
     """Calculate resistive DC voltage drop: ΔU = I × R (V)."""
 
     inputs = {"current_a": current_a, "resistance_ohm": resistance_ohm}
@@ -168,11 +162,7 @@ def calculate_regulator_input_current(
         "output_current_a": output_current_a,
         "efficiency": efficiency,
     }
-    missing = [
-        field
-        for field, value in inputs.items()
-        if value is None
-    ]
+    missing = [field for field, value in inputs.items() if value is None]
     if missing:
         return CalcResult.not_evaluable(
             name="electrical.regulator_input_current",
@@ -236,9 +226,7 @@ def calculate_regulator_power_loss(
     )
 
 
-def calculate_rail_current(
-    voltage_v: float | None, loads: list[RailLoad]
-) -> CalcResult:
+def calculate_rail_current(voltage_v: float | None, loads: list[RailLoad]) -> CalcResult:
     """Sum DC rail consumer currents; convert supplied load power using P / U."""
 
     inputs: dict[str, float | None] = {"rail_voltage_v": voltage_v}
@@ -251,9 +239,7 @@ def calculate_rail_current(
         current_key = f"loads[{index}].current_a"
         power_key = f"loads[{index}].power_w"
         if load.current_a is not None and load.power_w is not None:
-            raise InvalidInputError(
-                f"{load.name} must provide current_a or power_w, not both"
-            )
+            raise InvalidInputError(f"{load.name} must provide current_a or power_w, not both")
         if load.current_a is not None:
             require_non_negative(current_key, load.current_a)
             inputs[current_key] = load.current_a
@@ -325,11 +311,7 @@ def detect_rail_anomalies(
                 unit="V",
             )
         )
-    if (
-        voltage_min_v is not None
-        and voltage_max_v is not None
-        and voltage_min_v >= voltage_max_v
-    ):
+    if voltage_min_v is not None and voltage_max_v is not None and voltage_min_v >= voltage_max_v:
         raise InvalidInputError("voltage_min_v must be lower than voltage_max_v")
 
     if voltage_v is None:
