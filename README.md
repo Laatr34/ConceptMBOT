@@ -92,7 +92,7 @@ Détail : `docs/PLAN.md`.
 
 ### 8. État d'avancement
 
-Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend.
+Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend. Étape 3 terminée : moteur électrique DC pur avec puissance, courant, courant de rail, pertes de régulateur, chute de tension et détection des dépassements de limites. CI verte : 47 tests backend et 9 tests frontend.
 
 ### 9. Démarrage rapide
 
@@ -188,6 +188,8 @@ Single source of truth: `docs/PLAN.md`.
 **Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.
 
 **Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
+
+**Step 3 — DONE** — pure DC electrical engine: power/current, rail current aggregation, regulator input current and losses, resistive voltage drop, and checks against explicitly configured voltage/current limits. Missing values remain not evaluable. GitHub Actions passed: 47 backend tests and 9 frontend tests.
 
 ### 8. Quick start
 
