@@ -59,9 +59,7 @@ def _record_history(session: Session, record: ProjectRecord, action: str) -> Non
 
 def list_projects(session: Session) -> list[ProjectSummary]:
     records = session.scalars(
-        select(ProjectRecord).order_by(
-            ProjectRecord.updated_at.desc(), ProjectRecord.name
-        )
+        select(ProjectRecord).order_by(ProjectRecord.updated_at.desc(), ProjectRecord.name)
     ).all()
     return [_summary(record) for record in records]
 
@@ -151,9 +149,7 @@ def duplicate_project(session: Session, project_id: UUID) -> ProjectDocument:
 def import_project(session: Session, raw: dict[str, Any]) -> ProjectDocument:
     imported = migrate_project_document(raw)
     now = _now()
-    document = imported.model_copy(
-        update={"id": uuid4(), "created_at": now, "updated_at": now}
-    )
+    document = imported.model_copy(update={"id": uuid4(), "created_at": now, "updated_at": now})
     record = ProjectRecord(
         id=str(document.id),
         name=document.name,
@@ -169,9 +165,7 @@ def import_project(session: Session, raw: dict[str, Any]) -> ProjectDocument:
     return document
 
 
-def project_history(
-    session: Session, project_id: UUID
-) -> list[ProjectHistoryEntry]:
+def project_history(session: Session, project_id: UUID) -> list[ProjectHistoryEntry]:
     if session.get(ProjectRecord, str(project_id)) is None:
         raise ProjectNotFoundError(str(project_id))
     rows = session.scalars(

@@ -18,11 +18,7 @@ def client() -> Generator[TestClient]:
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    testing_session = sessionmaker(
-        bind=test_engine,
-        autoflush=False,
-        autocommit=False,
-    )
+    testing_session = sessionmaker(bind=test_engine, autoflush=False, autocommit=False)
     Base.metadata.create_all(bind=test_engine)
 
     def override_session() -> Generator[Session]:
@@ -82,10 +78,7 @@ def test_autosave_and_missing_project(client: TestClient) -> None:
     )
     assert saved.status_code == 200
     assert saved.json()["data"] == {"draft": True}
-    assert (
-        client.get("/api/projects/00000000-0000-0000-0000-000000000000").status_code
-        == 404
-    )
+    assert client.get("/api/projects/00000000-0000-0000-0000-000000000000").status_code == 404
 
 
 def test_import_rejects_unknown_schema_version(client: TestClient) -> None:
