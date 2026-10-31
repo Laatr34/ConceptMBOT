@@ -106,9 +106,10 @@ def _result(
 def calculate_center_of_gravity(points: list[MassPoint]) -> CenterOfGravityResult:
     """Calculate total mass and 3D center of gravity from component mass points."""
 
+    inputs: dict[str, float | None] = {}
+    missing: list[str] = []
     if not points:
         missing = ["mass_points"]
-        inputs: dict[str, float | None] = {}
         return CenterOfGravityResult(
             total_mass=_not_evaluable(
                 name="mechanical.total_mass",
@@ -140,8 +141,6 @@ def calculate_center_of_gravity(points: list[MassPoint]) -> CenterOfGravityResul
             ),
         )
 
-    inputs: dict[str, float | None] = {}
-    missing: list[str] = []
     total_mass_kg = 0.0
     weighted_x = 0.0
     weighted_y = 0.0
