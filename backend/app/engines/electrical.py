@@ -56,7 +56,8 @@ def _result(
         unit=unit,
         formula=formula,
         inputs=inputs,
-        assumptions=assumptions or ["DC steady-state calculation; transient behavior is not modeled."],
+        assumptions=assumptions
+        or ["DC steady-state calculation; transient behavior is not modeled."],
         status=ResultStatus.THEORETICAL,
         confidence=Confidence.HIGH,
     )
