@@ -10,7 +10,12 @@ from sqlalchemy.orm import Session
 
 from app.application import component_service
 from app.application.component_service import ComponentNotFoundError
-from app.domain.components import (\n    ComponentCreate,\n    ComponentDocument,\n    ComponentSummary,\n    ComponentUpdate,\n)
+from app.domain.components import (
+    ComponentCreate,
+    ComponentDocument,
+    ComponentSummary,
+    ComponentUpdate,
+)
 from app.infrastructure.database import get_session
 
 router = APIRouter(prefix="/api/components", tags=["components"])
@@ -43,9 +48,7 @@ def import_component(
 
 
 @router.get("/{component_id}", response_model=ComponentDocument)
-def get_component(
-    component_id: UUID, session: Session = Depends(get_session)
-) -> ComponentDocument:
+def get_component(component_id: UUID, session: Session = Depends(get_session)) -> ComponentDocument:
     try:
         return component_service.get_component(session, component_id)
     except ComponentNotFoundError as error:
@@ -73,9 +76,7 @@ def export_component(
 
 
 @router.delete("/{component_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_component(
-    component_id: UUID, session: Session = Depends(get_session)
-) -> Response:
+def delete_component(component_id: UUID, session: Session = Depends(get_session)) -> Response:
     try:
         component_service.delete_component(session, component_id)
     except ComponentNotFoundError as error:
