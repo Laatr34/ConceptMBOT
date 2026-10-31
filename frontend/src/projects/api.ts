@@ -16,6 +16,11 @@ export interface ProjectSummary {
   created_at: string
   updated_at: string
 }
+export interface ProjectHistoryEntry {
+  revision: number
+  action: string
+  created_at: string
+}
 export interface ProjectCreate {
   name: string
   description?: string | null
@@ -34,7 +39,22 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const projectsApi = {
   list: () => request<ProjectSummary[]>(API_BASE),
   get: (id: string) => request<ProjectDocument>(`${API_BASE}/${id}`),
-  create: (payload: ProjectCreate) => request<ProjectDocument>(API_BASE, { method: 'POST', body: JSON.stringify(payload) }),
-  duplicate: (id: string) => request<ProjectDocument>(`${API_BASE}/${id}/duplicate`, { method: 'POST' }),
+  create: (payload: ProjectCreate) =>
+    request<ProjectDocument>(API_BASE, { method: 'POST', body: JSON.stringify(payload) }),
+  duplicate: (id: string) =>
+    request<ProjectDocument>(`${API_BASE}/${id}/duplicate`, { method: 'POST' }),
   remove: (id: string) => request<void>(`${API_BASE}/${id}`, { method: 'DELETE' }),
+  export: (id: string) => request<ProjectDocument>(`${API_BASE}/${id}/export`),
+  import: (document: unknown) =>
+    request<ProjectDocument>(`${API_BASE}/import`, {
+      method: 'POST',
+      body: JSON.stringify(document),
+    }),
+  autosave: (id: string, data: Record<string, unknown>) =>
+    request<ProjectDocument>(`${API_BASE}/${id}/autosave`, {
+      method: 'PUT',
+      body: JSON.stringify({ data }),
+    }),
+  history: (id: string) =>
+    request<ProjectHistoryEntry[]>(`${API_BASE}/${id}/history`),
 }
