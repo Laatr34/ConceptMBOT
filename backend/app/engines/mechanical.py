@@ -312,8 +312,10 @@ def calculate_four_wheel_loads(
                 inputs=inputs,
                 assumptions=assumptions,
                 limits=[
-                    "A negative reaction means that the assumed contact cannot maintain compression; "
-                    "the robot is outside the static support polygon."
+                    (
+                        "A negative reaction means that the assumed contact cannot maintain compression; "
+                        "the robot is outside the static support polygon."
+                    )
                 ],
             )
             for key, value in reactions.items()
