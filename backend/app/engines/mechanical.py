@@ -48,6 +48,7 @@ class FourWheelLoads(BaseModel):
 
 
 class StabilityStatus(str, Enum):
+    UNKNOWN = "unknown"
     STABLE = "stable"
     MARGINAL = "marginal"
     UNSTABLE = "unstable"
@@ -359,7 +360,7 @@ def calculate_static_stability(
                 inputs=inputs,
                 missing=missing,
             ),
-            status=StabilityStatus.MARGINAL,
+            status=StabilityStatus.UNKNOWN,
         )
 
     assert cg_x_m is not None

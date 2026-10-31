@@ -104,8 +104,21 @@ def test_unknown_stability_input_is_not_evaluable() -> None:
     )
     assert result.overall_margin_m.value is None
     assert result.overall_margin_m.missing_inputs == ["cg_x_m"]
+    assert result.status is StabilityStatus.UNKNOWN
 
 
 def test_non_positive_mass_is_rejected() -> None:
     with pytest.raises(InvalidInputError):
         calculate_center_of_gravity([MassPoint("part", 0.0, 0.0, 0.0, 0.0)])
+
+
+def test_unknown_wheel_load_inputs_are_not_evaluable() -> None:
+    result = calculate_four_wheel_loads(
+        mass_kg=10.0,
+        cg_x_m=None,
+        cg_y_m=0.0,
+        wheelbase_m=0.5,
+        track_width_m=0.4,
+    )
+    assert result.front_left_n.value is None
+    assert result.front_left_n.missing_inputs == ["cg_x_m"]
