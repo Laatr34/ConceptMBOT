@@ -76,3 +76,22 @@ def test_verified_component_requires_datasheet_url(client: TestClient) -> None:
 def test_unknown_component_schema_is_rejected(client: TestClient) -> None:
     response = client.post("/api/components/import", json={"schema_version": 8})
     assert response.status_code == 422
+
+
+def test_verified_status_requires_a_datasheet_url(client: TestClient) -> None:
+    created = client.post(
+        "/api/components",
+        json={"name": "Carte de test", "category": "controller"},
+    ).json()
+    verified = client.patch(
+        f"/api/components/{created['id']}",
+        json={"status": "verified", "datasheet_url": "https://example.org/datasheet.pdf"},
+    )
+    assert verified.status_code == 200
+    assert verified.json()["status"] == "verified"
+
+    removed_source = client.patch(
+        f"/api/components/{created['id']}",
+        json={"datasheet_url": None},
+    )
+    assert removed_source.status_code == 422

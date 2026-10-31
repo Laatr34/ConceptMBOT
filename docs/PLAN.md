@@ -9,7 +9,7 @@ Status legend: `TODO`, `IN PROGRESS`, `DONE` (DONE = tests executed and passing)
 |---|------|--------|-------|
 | 0 | Foundations: monorepo, tooling, `CalcResult`, SI units, i18n, CI | DONE | |
 | 1 | Data models and project management (versioned schema, CRUD, duplicate, import/export, history, autosave) | DONE | GitHub Actions: 24 backend tests and 9 frontend tests passed; Ruff, mypy, frontend lint/typecheck/build passed |
-| 2 | Component library (structured datasheet, verified/custom/incomplete status, import/export) | IN PROGRESS | Empty library, versioned component records, datasheet provenance, CRUD and JSON import/export implemented; CI validation pending |
+| 2 | Component library (structured datasheet, verified/custom/incomplete status, import/export) | DONE | Empty library, structured parameter records, missing-field tracking, explicit user-declared status, CRUD and JSON import/export; CI passed with 29 backend and 9 frontend tests |
 | 3 | Electrical engine (rails, P=UI, regulators, efficiency, voltage drop, anomaly detection) | TODO | Hand-computed reference cases |
 | 4 | Battery engine (series/parallel, Wh, usable energy, autonomy theoretical/estimated/measured) | TODO | |
 | 5 | Motorization engine (differential drive, torque, traction, slope, current) | TODO | Never use stall current as running current |

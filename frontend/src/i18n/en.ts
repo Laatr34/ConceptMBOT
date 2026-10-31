@@ -26,7 +26,7 @@ const en = {
     saveError: 'Save failed — check your connection', revisionHistory: 'Revision history',
     noHistory: 'No revision yet', projectId: 'Project ID', revision: 'Revision',
     schemaVersion: 'Document schema version',
-    libraryHint: 'Store component records from datasheets or your own verified measurements. The library starts empty.',
+    libraryHint: 'The library starts empty. Verified status is your declaration; RobotLab only checks that a datasheet URL is provided, not its contents.',
     componentName: 'Component name', componentCategory: 'Category', manufacturer: 'Manufacturer',
     modelReference: 'Model / reference', componentStatus: 'Data status', datasheetUrl: 'Datasheet URL',
     creatingComponent: 'Adding…', addComponent: 'Add component', importComponent: 'Import JSON',
@@ -46,7 +46,7 @@ const en = {
     mechanical: 'Mechanical', communication: 'Communication', other: 'Other',
   },
   componentStatus: {
-    verified: 'Verified datasheet', custom: 'Custom data', incomplete: 'Incomplete',
+    verified: 'Owner-verified datasheet', custom: 'Custom data', incomplete: 'Incomplete',
   },
   disclaimer: 'Results are design aids, not industrially certified calculations. Physical prototyping and measurement remain necessary.',
 } as const

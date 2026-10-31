@@ -34,7 +34,7 @@ Le robot visé par le projet est un **robot médiateur** (robot mobile évoluant
 4. Validation de toutes les entrées ; gestion des cas limites.
 5. **Traçabilité** : chaque résultat porte valeur, unité, formule, entrées, hypothèses, statut, limites (`CalcResult`).
 6. **Aucune valeur technique inventée.** Donnée inconnue = `None`, jamais `0` ni valeur par défaut. Le calcul renvoie alors « non évaluable » avec la liste des champs manquants.
-7. Ne jamais attribuer de caractéristiques à une référence commerciale sans source vérifiable. La bibliothèque de composants démarre **vide**.
+7. Ne jamais attribuer de caractéristiques à une référence commerciale sans source vérifiable. La bibliothèque de composants démarre **vide**. Le statut « vérifié » reste une déclaration du propriétaire : l'application exige une URL de fiche technique, mais n'en contrôle pas automatiquement le contenu.
 8. Ne jamais présenter une estimation comme une mesure réelle ; ne jamais prétendre qu'un calcul est certifié.
 9. Aucune fonctionnalité déclarée terminée sans tests exécutés.
 10. Ne jamais masquer un avertissement pour embellir l'interface.
@@ -76,7 +76,7 @@ Les moteurs (`engines/`) sont des **fonctions pures** : pas d'accès base de don
 |---|---|---|
 | 0 | Fondations (monorepo, outillage, `CalcResult`, unités, i18n, CI) | **Fait (voir État d'avancement)** |
 | 1 | Modèles de données et gestion des projets | **Fait** |
-| 2 | Bibliothèque de composants | En cours |
+| 2 | Bibliothèque de composants | **Fait** |
 | 3 | Moteur de calcul électrique | À faire |
 | 4 | Moteur batterie et autonomie | À faire |
 | 5 | Moteur motorisation | À faire |
@@ -92,7 +92,7 @@ Détail : `docs/PLAN.md`.
 
 ### 8. État d'avancement
 
-Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 en cours : bibliothèque de composants vide avec fiches structurées, états de vérification et import/export JSON.
+Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend.
 
 ### 9. Démarrage rapide
 
@@ -155,7 +155,7 @@ The target is a **mediator robot** (a mobile robot operating among visitors). Th
 4. Validate every input; handle edge cases.
 5. **Traceability**: every result carries value, unit, formula, inputs, assumptions, status, limits (`CalcResult`).
 6. **Never invent technical values.** Unknown data = `None`, never `0` or a default. The calculation then returns "not evaluable" with the list of missing fields.
-7. Never attach characteristics to a commercial part number without a verifiable source. The component library starts **empty**.
+7. Never attach characteristics to a commercial part number without a verifiable source. The component library starts **empty**. A "verified" status is an owner declaration: the app requires a datasheet URL but does not independently inspect its contents.
 8. Never present an estimate as a measurement; never claim a calculation is certified.
 9. No feature is "done" without executed tests.
 10. Never hide a warning to make the UI look nicer.
@@ -185,7 +185,7 @@ Single source of truth: `docs/PLAN.md`.
 - Frontend: Vite + React + TS + Tailwind, FR/EN i18n, the 13-entry side navigation (pages are placeholders **clearly labelled "not implemented yet"** — no fake features), Vitest passing.
 - CI: GitHub Actions (backend + frontend).
 
-**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.\n\n**Step 2 — IN PROGRESS** — empty component library with structured records, verification states and JSON import/export.
+**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.\n\n**Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
 
 ### 8. Quick start
 

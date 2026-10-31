@@ -29,7 +29,7 @@ const fr: Dict = {
     saveError: 'Échec de la sauvegarde — vérifie ta connexion', revisionHistory: 'Historique des révisions',
     noHistory: 'Aucune révision', projectId: 'Identifiant du projet', revision: 'Révision',
     schemaVersion: 'Version du schéma du document',
-    libraryHint: 'Enregistre les composants à partir de leurs fiches techniques ou de tes propres mesures vérifiées. La bibliothèque démarre vide.',
+    libraryHint: 'La bibliothèque démarre vide. Le statut « vérifié » est une déclaration de ta part : RobotLab vérifie uniquement la présence d’une URL, pas le contenu de la fiche.',
     componentName: 'Nom du composant', componentCategory: 'Catégorie', manufacturer: 'Fabricant',
     modelReference: 'Modèle / référence', componentStatus: 'État des données', datasheetUrl: 'URL de la fiche technique',
     creatingComponent: 'Ajout…', addComponent: 'Ajouter le composant', importComponent: 'Importer JSON',
@@ -49,7 +49,7 @@ const fr: Dict = {
     mechanical: 'Mécanique', communication: 'Communication', other: 'Autre',
   },
   componentStatus: {
-    verified: 'Fiche vérifiée', custom: 'Données personnalisées', incomplete: 'Incomplet',
+    verified: 'Fiche déclarée vérifiée', custom: 'Données personnalisées', incomplete: 'Incomplet',
   },
   disclaimer: "Les résultats sont des aides à la conception, pas des calculs certifiés industriellement. Le prototypage et la mesure physiques restent nécessaires.",
 }
