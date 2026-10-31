@@ -8,7 +8,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-CURRENT_SCHEMA_VERSION = 1
+CURRENT_SCHEMA_VERSION: Literal[1] = 1
 
 
 class ProjectDocument(BaseModel):
