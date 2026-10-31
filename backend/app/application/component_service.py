@@ -119,9 +119,7 @@ def delete_component(session: Session, component_id: UUID) -> None:
 def import_component(session: Session, raw: dict[str, Any]) -> ComponentDocument:
     imported = migrate_component_document(raw)
     now = _now()
-    document = imported.model_copy(
-        update={"id": uuid4(), "created_at": now, "updated_at": now}
-    )
+    document = imported.model_copy(update={"id": uuid4(), "created_at": now, "updated_at": now})
     record = ComponentRecord(
         id=str(document.id),
         name=document.name,
