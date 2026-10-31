@@ -28,10 +28,10 @@ describe('App shell', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
   })
 
-  it('switches language to French', async () => {
+  it('switches the component library to French', async () => {
     renderAt('/library')
     await userEvent.selectOptions(screen.getByLabelText('Language'), 'fr')
     expect(await screen.findByRole('heading', { name: 'Bibliothèque de composants' })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('Pas encore implémenté')
+    expect(screen.getByRole('button', { name: 'Ajouter le composant' })).toBeInTheDocument()
   })
 })
