@@ -63,6 +63,8 @@ def update_component(
         return component_service.update_component(session, component_id, payload)
     except ComponentNotFoundError as error:
         raise _not_found(error) from error
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
 
 
 @router.get("/{component_id}/export", response_model=ComponentDocument)
