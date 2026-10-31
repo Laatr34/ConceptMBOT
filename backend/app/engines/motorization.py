@@ -183,9 +183,10 @@ def calculate_slope_force(
         raise InvalidInputError("slope_angle_rad must be finite and in [0, π/2)")
     require_non_negative("rolling_resistance_coefficient", rolling_resistance_coefficient)
     gravity_m_s2 = 9.80665
-    value = mass_kg * gravity_m_s2 * (
-        math.sin(slope_angle_rad)
-        + rolling_resistance_coefficient * math.cos(slope_angle_rad)
+    value = (
+        mass_kg
+        * gravity_m_s2
+        * (math.sin(slope_angle_rad) + rolling_resistance_coefficient * math.cos(slope_angle_rad))
     )
     return _result(
         name="motorization.slope_force",
@@ -342,7 +343,9 @@ def calculate_traction_margin(
         unit="N",
         formula="ΔF = Fmax − Frequired",
         inputs=inputs,
-        assumptions=["A negative margin indicates that the required force exceeds the friction limit."],
+        assumptions=[
+            "A negative margin indicates that the required force exceeds the friction limit."
+        ],
     )
 
 
