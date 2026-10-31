@@ -185,7 +185,9 @@ Single source of truth: `docs/PLAN.md`.
 - Frontend: Vite + React + TS + Tailwind, FR/EN i18n, the 13-entry side navigation (pages are placeholders **clearly labelled "not implemented yet"** — no fake features), Vitest passing.
 - CI: GitHub Actions (backend + frontend).
 
-**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.\n\n**Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
+**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.
+
+**Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
 
 ### 8. Quick start
 
