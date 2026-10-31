@@ -30,9 +30,9 @@ export default function LibraryPage() {
   const [error, setError] = useState('')
 
   const refresh = useCallback(async () => {
-    setError('')
     try {
       setComponents(await componentsApi.list())
+      setError('')
     } catch {
       setError(t('common.componentError'))
     } finally {
@@ -98,7 +98,7 @@ export default function LibraryPage() {
       const url = URL.createObjectURL(blob)
       const anchor = window.document.createElement('a')
       anchor.href = url
-      anchor.download = \`robotlab-component-\${document.name.replace(/[^a-z0-9-_]/gi, '-')}.json\`
+      anchor.download = 'robotlab-component-' + document.name.replace(/[^a-z0-9-_]/gi, '-') + '.json'
       anchor.click()
       URL.revokeObjectURL(url)
     } catch {
@@ -142,7 +142,7 @@ export default function LibraryPage() {
         <label className="text-sm font-medium text-slate-700">{t('common.componentCategory')}
           <select value={category} onChange={(event) => setCategory(event.target.value as ComponentCategory)}
             className="mt-1 block w-full rounded border border-slate-300 px-3 py-2">
-            {CATEGORIES.map((item) => <option key={item} value={item}>{t(\`componentCategory.\${item}\`)}</option>)}
+            {CATEGORIES.map((item) => <option key={item} value={item}>{t('componentCategory.' + item)}</option>)}
           </select>
         </label>
         <label className="text-sm font-medium text-slate-700">{t('common.manufacturer')}
@@ -156,7 +156,7 @@ export default function LibraryPage() {
         <label className="text-sm font-medium text-slate-700">{t('common.componentStatus')}
           <select value={status} onChange={(event) => setStatus(event.target.value as ComponentStatus)}
             className="mt-1 block w-full rounded border border-slate-300 px-3 py-2">
-            {STATUSES.map((item) => <option key={item} value={item}>{t(\`componentStatus.\${item}\`)}</option>)}
+            {STATUSES.map((item) => <option key={item} value={item}>{t('componentStatus.' + item)}</option>)}
           </select>
         </label>
         <label className="text-sm font-medium text-slate-700">{t('common.datasheetUrl')}
@@ -197,13 +197,13 @@ export default function LibraryPage() {
                 <div className="min-w-0">
                   <h2 className="truncate font-semibold text-slate-900">{component.name}</h2>
                   <p className="mt-1 text-xs text-slate-500">
-                    {t(\`componentCategory.\${component.category}\`)}
-                    {component.manufacturer ? \` · \${component.manufacturer}\` : ''}
-                    {component.model ? \` · \${component.model}\` : ''}
+                    {t('componentCategory.' + component.category)}
+                    {component.manufacturer ? ' · ' + component.manufacturer : ''}
+                    {component.model ? ' · ' + component.model : ''}
                   </p>
                 </div>
                 <span className="shrink-0 rounded bg-slate-100 px-2 py-1 text-xs">
-                  {t(\`componentStatus.\${component.status}\`)}
+                  {t('componentStatus.' + component.status)}
                 </span>
               </div>
               <p className="mt-2 text-xs text-slate-500">{t('common.revision')}: {component.revision}</p>
