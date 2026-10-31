@@ -40,6 +40,8 @@ export interface ComponentCreate {
   manufacturer?: string | null
   model?: string | null
   datasheet_url?: string | null
+  parameters?: ComponentParameter[]
+  missing_fields?: string[]
 }
 const API_BASE = '/api/components'
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -47,7 +49,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: { 'Content-Type': 'application/json', ...init?.headers },
   })
-  if (!response.ok) throw new Error((await response.text()) || `Request failed (${response.status})`)
+  if (!response.ok) throw new Error((await response.text()) || \`Request failed (\${response.status})\`)
   if (response.status === 204) return undefined as T
   return (await response.json()) as T
 }
@@ -55,8 +57,8 @@ export const componentsApi = {
   list: () => request<ComponentSummary[]>(API_BASE),
   create: (payload: ComponentCreate) =>
     request<ComponentDocument>(API_BASE, { method: 'POST', body: JSON.stringify(payload) }),
-  remove: (id: string) => request<void>(`${API_BASE}/${id}`, { method: 'DELETE' }),
-  export: (id: string) => request<ComponentDocument>(`${API_BASE}/${id}/export`),
+  remove: (id: string) => request<void>(\`\${API_BASE}/\${id}\`, { method: 'DELETE' }),
+  export: (id: string) => request<ComponentDocument>(\`\${API_BASE}/\${id}/export\`),
   import: (document: unknown) =>
-    request<ComponentDocument>(`${API_BASE}/import`, { method: 'POST', body: JSON.stringify(document) }),
+    request<ComponentDocument>(\`\${API_BASE}/import\`, { method: 'POST', body: JSON.stringify(document) }),
 }

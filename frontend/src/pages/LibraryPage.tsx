@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   componentsApi,
   type ComponentCategory,
+  type ComponentParameter,
   type ComponentStatus,
   type ComponentSummary,
 } from '../components/api'
@@ -22,6 +23,8 @@ export default function LibraryPage() {
   const [manufacturer, setManufacturer] = useState('')
   const [model, setModel] = useState('')
   const [datasheetUrl, setDatasheetUrl] = useState('')
+  const [parametersJson, setParametersJson] = useState('[]')
+  const [missingFieldsJson, setMissingFieldsJson] = useState('[]')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -47,6 +50,11 @@ export default function LibraryPage() {
     setSaving(true)
     setError('')
     try {
+      const parameters: unknown = JSON.parse(parametersJson)
+      const missingFields: unknown = JSON.parse(missingFieldsJson)
+      if (!Array.isArray(parameters) || !Array.isArray(missingFields)) {
+        throw new Error('The datasheet fields must be JSON arrays')
+      }
       await componentsApi.create({
         name: name.trim(),
         category,
@@ -54,16 +62,20 @@ export default function LibraryPage() {
         manufacturer: manufacturer.trim() || null,
         model: model.trim() || null,
         datasheet_url: datasheetUrl.trim() || null,
+        parameters: parameters as ComponentParameter[],
+        missing_fields: missingFields as string[],
       })
       setName('')
       setManufacturer('')
       setModel('')
       setDatasheetUrl('')
+      setParametersJson('[]')
+      setMissingFieldsJson('[]')
       setStatus('incomplete')
       setCategory('other')
       await refresh()
     } catch {
-      setError(t('common.componentError'))
+      setError(t('common.componentDataJsonError'))
     } finally {
       setSaving(false)
     }
@@ -86,7 +98,7 @@ export default function LibraryPage() {
       const url = URL.createObjectURL(blob)
       const anchor = window.document.createElement('a')
       anchor.href = url
-      anchor.download = `robotlab-component-${document.name.replace(/[^a-z0-9-_]/gi, '-')}.json`
+      anchor.download = \`robotlab-component-\${document.name.replace(/[^a-z0-9-_]/gi, '-')}.json\`
       anchor.click()
       URL.revokeObjectURL(url)
     } catch {
@@ -130,7 +142,7 @@ export default function LibraryPage() {
         <label className="text-sm font-medium text-slate-700">{t('common.componentCategory')}
           <select value={category} onChange={(event) => setCategory(event.target.value as ComponentCategory)}
             className="mt-1 block w-full rounded border border-slate-300 px-3 py-2">
-            {CATEGORIES.map((item) => <option key={item} value={item}>{t(`componentCategory.${item}`)}</option>)}
+            {CATEGORIES.map((item) => <option key={item} value={item}>{t(\`componentCategory.\${item}\`)}</option>)}
           </select>
         </label>
         <label className="text-sm font-medium text-slate-700">{t('common.manufacturer')}
@@ -144,13 +156,24 @@ export default function LibraryPage() {
         <label className="text-sm font-medium text-slate-700">{t('common.componentStatus')}
           <select value={status} onChange={(event) => setStatus(event.target.value as ComponentStatus)}
             className="mt-1 block w-full rounded border border-slate-300 px-3 py-2">
-            {STATUSES.map((item) => <option key={item} value={item}>{t(`componentStatus.${item}`)}</option>)}
+            {STATUSES.map((item) => <option key={item} value={item}>{t(\`componentStatus.\${item}\`)}</option>)}
           </select>
         </label>
         <label className="text-sm font-medium text-slate-700">{t('common.datasheetUrl')}
           <input type="url" required={status === 'verified'} value={datasheetUrl}
             onChange={(event) => setDatasheetUrl(event.target.value)}
             className="mt-1 block w-full rounded border border-slate-300 px-3 py-2" />
+        </label>
+        <label className="text-sm font-medium text-slate-700 md:col-span-2">{t('common.componentParametersJson')}
+          <textarea rows={5} spellCheck={false} value={parametersJson}
+            onChange={(event) => setParametersJson(event.target.value)}
+            className="mt-1 block w-full rounded border border-slate-300 p-3 font-mono text-xs" />
+          <span className="mt-1 block font-normal text-slate-500">{t('common.componentParametersHint')}</span>
+        </label>
+        <label className="text-sm font-medium text-slate-700 md:col-span-2">{t('common.missingFieldsJson')}
+          <textarea rows={2} spellCheck={false} value={missingFieldsJson}
+            onChange={(event) => setMissingFieldsJson(event.target.value)}
+            className="mt-1 block w-full rounded border border-slate-300 p-3 font-mono text-xs" />
         </label>
         <div className="md:col-span-2">
           <button type="submit" disabled={!name.trim() || saving || (status === 'verified' && !datasheetUrl.trim())}
@@ -174,13 +197,13 @@ export default function LibraryPage() {
                 <div className="min-w-0">
                   <h2 className="truncate font-semibold text-slate-900">{component.name}</h2>
                   <p className="mt-1 text-xs text-slate-500">
-                    {t(`componentCategory.${component.category}`)}
-                    {component.manufacturer ? ` · ${component.manufacturer}` : ''}
-                    {component.model ? ` · ${component.model}` : ''}
+                    {t(\`componentCategory.\${component.category}\`)}
+                    {component.manufacturer ? \` · \${component.manufacturer}\` : ''}
+                    {component.model ? \` · \${component.model}\` : ''}
                   </p>
                 </div>
                 <span className="shrink-0 rounded bg-slate-100 px-2 py-1 text-xs">
-                  {t(`componentStatus.${component.status}`)}
+                  {t(\`componentStatus.\${component.status}\`)}
                 </span>
               </div>
               <p className="mt-2 text-xs text-slate-500">{t('common.revision')}: {component.revision}</p>

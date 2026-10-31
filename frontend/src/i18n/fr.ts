@@ -38,6 +38,10 @@ const fr: Dict = {
     componentError: 'Impossible de charger ou enregistrer la bibliothèque de composants.',
     componentImportError: "Échec de l'import. Vérifie que le fichier est un document JSON de composant valide.",
     confirmDeleteComponent: 'Supprimer ce composant ? Cette action est irréversible.',
+    componentParametersJson: 'Paramètres de la fiche technique (tableau JSON)',
+    componentParametersHint: 'Chaque élément contient name, value, unit et source_page. Utilise null quand une valeur est inconnue.',
+    missingFieldsJson: 'Champs manquants de la fiche technique (tableau JSON)',
+    componentDataJsonError: 'Données de composant invalides. Vérifie les deux tableaux JSON et les champs obligatoires.',
   },
   componentCategory: {
     controller: 'Contrôleur', motor: 'Moteur', battery: 'Batterie', sensor: 'Capteur',

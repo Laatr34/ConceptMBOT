@@ -35,6 +35,10 @@ const en = {
     componentError: 'Unable to save or load the component library.',
     componentImportError: 'Import failed. Check that the file is a valid component JSON document.',
     confirmDeleteComponent: 'Delete this component? This action cannot be undone.',
+    componentParametersJson: 'Datasheet parameters (JSON array)',
+    componentParametersHint: 'Each item uses name, value, unit and source_page. Use null when a value is unknown.',
+    missingFieldsJson: 'Missing datasheet fields (JSON array)',
+    componentDataJsonError: 'Invalid component data. Check both JSON arrays and the required fields.',
   },
   componentCategory: {
     controller: 'Controller', motor: 'Motor', battery: 'Battery', sensor: 'Sensor',
