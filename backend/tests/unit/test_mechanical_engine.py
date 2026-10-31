@@ -25,9 +25,7 @@ def test_center_of_gravity_reference() -> None:
 
 
 def test_unknown_mass_or_position_is_not_guessed() -> None:
-    result = calculate_center_of_gravity(
-        [MassPoint("battery", None, 0.0, 0.0, 0.1)]
-    )
+    result = calculate_center_of_gravity([MassPoint("battery", None, 0.0, 0.0, 0.1)])
     assert result.total_mass.value is None
     assert result.total_mass.status is ResultStatus.NOT_EVALUABLE
     assert result.total_mass.missing_inputs == ["battery.mass_kg"]
