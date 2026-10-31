@@ -59,9 +59,7 @@ def _result(
     )
 
 
-def calculate_pack_voltage(
-    cell_voltage_v: float | None, series_count: int | None
-) -> CalcResult:
+def calculate_pack_voltage(cell_voltage_v: float | None, series_count: int | None) -> CalcResult:
     """Calculate nominal pack voltage: Upack = Ucell × Ns (V)."""
 
     inputs = {
@@ -105,7 +103,10 @@ def calculate_pack_capacity(
     }
     missing = [
         field
-        for field, value in (("cell_capacity_c", cell_capacity_c), ("parallel_count", parallel_count))
+        for field, value in (
+            ("cell_capacity_c", cell_capacity_c),
+            ("parallel_count", parallel_count),
+        )
         if value is None
     ]
     if missing:
@@ -118,7 +119,11 @@ def calculate_pack_capacity(
         )
     assert cell_capacity_c is not None and parallel_count is not None
     require_positive("cell_capacity_c", cell_capacity_c)
-    if not isinstance(parallel_count, int) or isinstance(parallel_count, bool) or parallel_count <= 0:
+    if (
+        not isinstance(parallel_count, int)
+        or isinstance(parallel_count, bool)
+        or parallel_count <= 0
+    ):
         raise InvalidInputError("parallel_count must be an integer > 0")
     return _result(
         name="battery.pack_capacity",
@@ -129,9 +134,7 @@ def calculate_pack_capacity(
     )
 
 
-def calculate_pack_energy(
-    nominal_voltage_v: float | None, capacity_c: float | None
-) -> CalcResult:
+def calculate_pack_energy(nominal_voltage_v: float | None, capacity_c: float | None) -> CalcResult:
     """Calculate nominal pack energy: E = U × Q (J)."""
 
     inputs = {"nominal_voltage_v": nominal_voltage_v, "capacity_c": capacity_c}
