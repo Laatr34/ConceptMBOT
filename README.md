@@ -78,7 +78,7 @@ Les moteurs (`engines/`) sont des **fonctions pures** : pas d'accès base de don
 | 1 | Modèles de données et gestion des projets | **Fait** |
 | 2 | Bibliothèque de composants | **Fait** |
 | 3 | Moteur de calcul électrique | À faire |
-| 4 | Moteur batterie et autonomie | À faire |
+| 4 | Moteur batterie et autonomie | **Fait** |
 | 5 | Moteur motorisation | À faire |
 | 6 | Conception mécanique | À faire |
 | 7 | Centre de diagnostic | À faire |
@@ -92,7 +92,7 @@ Détail : `docs/PLAN.md`.
 
 ### 8. État d'avancement
 
-Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend. Étape 3 terminée : moteur électrique DC pur avec puissance, courant, courant de rail, pertes de régulateur, chute de tension et détection des dépassements de limites. CI verte : 47 tests backend et 9 tests frontend.
+Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend. Étape 3 terminée : moteur électrique DC pur avec puissance, courant, courant de rail, pertes de régulateur, chute de tension et détection des dépassements de limites. CI verte : 47 tests backend et 9 tests frontend. Étape 4 terminée : calcul des packs série/parallèle, énergie nominale et utilisable, autonomie théorique/estimée/mesurée. Les effets Peukert, température et vieillissement restent des limites documentées faute de données batterie spécifiques. CI verte : 65 tests backend et 9 tests frontend.
 
 ### 9. Démarrage rapide
 
@@ -190,6 +190,8 @@ Single source of truth: `docs/PLAN.md`.
 **Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
 
 **Step 3 — DONE** — pure DC electrical engine: power/current, rail current aggregation, regulator input current and losses, resistive voltage drop, and checks against explicitly configured voltage/current limits. Missing values remain not evaluable. GitHub Actions passed: 47 backend tests and 9 frontend tests.
+
+**Step 4 — DONE** — series/parallel pack voltage and charge, nominal and usable energy in joules, and theoretical/estimated/measured autonomy. Peukert, temperature and aging effects remain documented limitations without battery-specific data. GitHub Actions passed: 65 backend tests and 9 frontend tests.
 
 ### 8. Quick start
 

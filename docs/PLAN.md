@@ -11,7 +11,7 @@ Status legend: `TODO`, `IN PROGRESS`, `DONE` (DONE = tests executed and passing)
 | 1 | Data models and project management (versioned schema, CRUD, duplicate, import/export, history, autosave) | DONE | GitHub Actions: 24 backend tests and 9 frontend tests passed; Ruff, mypy, frontend lint/typecheck/build passed |
 | 2 | Component library (structured datasheet, verified/custom/incomplete status, import/export) | DONE | Empty library, structured parameter records, missing-field tracking, explicit user-declared status, CRUD and JSON import/export; CI passed with 29 backend and 9 frontend tests |
 | 3 | Electrical engine (rails, P=UI, regulators, efficiency, voltage drop, anomaly detection) | DONE | Pure DC functions, explicit missing-input results, regulator efficiency, rail aggregation, voltage-drop calculation and limit checks; 47 backend tests pass |
-| 4 | Battery engine (series/parallel, Wh, usable energy, autonomy theoretical/estimated/measured) | TODO | |
+| 4 | Battery engine (series/parallel, Wh, usable energy, autonomy theoretical/estimated/measured) | DONE | Series/parallel pack voltage and charge, nominal/usable energy in J, theoretical/estimated/measured autonomy; Peukert, temperature and aging limits documented; 65 backend tests pass |
 | 5 | Motorization engine (differential drive, torque, traction, slope, current) | TODO | Never use stall current as running current |
 | 6 | Mechanical design (mass, CoG, wheel load, static stability, 2D then 3D view) | TODO | |
 | 7 | Diagnostics center (severities, full warning structure) | TODO | |
