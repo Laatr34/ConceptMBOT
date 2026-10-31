@@ -40,9 +40,7 @@ def create_project(
     return project_service.create_project(session, payload)
 
 
-@router.post(
-    "/import", response_model=ProjectDocument, status_code=status.HTTP_201_CREATED
-)
+@router.post("/import", response_model=ProjectDocument, status_code=status.HTTP_201_CREATED)
 def import_project(
     payload: dict[str, Any], session: Session = Depends(get_session)
 ) -> ProjectDocument:
@@ -53,9 +51,7 @@ def import_project(
 
 
 @router.get("/{project_id}", response_model=ProjectDocument)
-def get_project(
-    project_id: UUID, session: Session = Depends(get_session)
-) -> ProjectDocument:
+def get_project(project_id: UUID, session: Session = Depends(get_session)) -> ProjectDocument:
     try:
         return project_service.get_project(session, project_id)
     except ProjectNotFoundError as error:
@@ -83,9 +79,7 @@ def autosave_project(
 
 
 @router.post("/{project_id}/duplicate", response_model=ProjectDocument)
-def duplicate_project(
-    project_id: UUID, session: Session = Depends(get_session)
-) -> ProjectDocument:
+def duplicate_project(project_id: UUID, session: Session = Depends(get_session)) -> ProjectDocument:
     try:
         return project_service.duplicate_project(session, project_id)
     except ProjectNotFoundError as error:
@@ -93,9 +87,7 @@ def duplicate_project(
 
 
 @router.get("/{project_id}/export", response_model=ProjectDocument)
-def export_project(
-    project_id: UUID, session: Session = Depends(get_session)
-) -> ProjectDocument:
+def export_project(project_id: UUID, session: Session = Depends(get_session)) -> ProjectDocument:
     try:
         return project_service.get_project(session, project_id)
     except ProjectNotFoundError as error:
@@ -113,9 +105,7 @@ def get_project_history(
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_project(
-    project_id: UUID, session: Session = Depends(get_session)
-) -> Response:
+def delete_project(project_id: UUID, session: Session = Depends(get_session)) -> Response:
     record = session.get(ProjectRecord, str(project_id))
     if record is None:
         raise HTTPException(status_code=404, detail="Project not found")
