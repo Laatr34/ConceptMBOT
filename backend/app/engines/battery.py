@@ -84,7 +84,7 @@ def calculate_pack_voltage(
         )
     assert cell_voltage_v is not None and series_count is not None
     require_positive("cell_voltage_v", cell_voltage_v)
-    if series_count <= 0:
+    if not isinstance(series_count, int) or isinstance(series_count, bool) or series_count <= 0:
         raise InvalidInputError("series_count must be an integer > 0")
     return _result(
         name="battery.pack_voltage",
@@ -119,7 +119,7 @@ def calculate_pack_capacity(
         )
     assert cell_capacity_c is not None and parallel_count is not None
     require_positive("cell_capacity_c", cell_capacity_c)
-    if parallel_count <= 0:
+    if not isinstance(parallel_count, int) or isinstance(parallel_count, bool) or parallel_count <= 0:
         raise InvalidInputError("parallel_count must be an integer > 0")
     return _result(
         name="battery.pack_capacity",
@@ -277,7 +277,7 @@ def record_measured_autonomy(duration_s: float | None) -> CalcResult:
             inputs=inputs,
             missing=["measured_duration_s"],
         )
-    require_positive("measured_duration_s", duration_s)
+    require_non_negative("measured_duration_s", duration_s)
     return _result(
         name="battery.autonomy_measured",
         value=duration_s,

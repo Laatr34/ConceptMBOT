@@ -90,3 +90,15 @@ def test_missing_measured_runtime_is_not_evaluable() -> None:
 def test_zero_average_power_is_rejected() -> None:
     with pytest.raises(InvalidInputError):
         calculate_theoretical_autonomy(1000.0, 0.0)
+
+
+@pytest.mark.parametrize("count", [0, -1, 2.5, True])
+def test_invalid_series_count_is_rejected(count: int | float | bool) -> None:
+    with pytest.raises(InvalidInputError):
+        calculate_pack_voltage(3.7, count)  # type: ignore[arg-type]
+
+
+def test_zero_duration_can_be_recorded_as_a_measurement() -> None:
+    result = record_measured_autonomy(0.0)
+    assert result.value == 0.0
+    assert result.status is ResultStatus.MEASURED
