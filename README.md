@@ -75,7 +75,7 @@ Les moteurs (`engines/`) sont des **fonctions pures** : pas d'accès base de don
 | # | Étape | État |
 |---|---|---|
 | 0 | Fondations (monorepo, outillage, `CalcResult`, unités, i18n, CI) | **Fait (voir État d'avancement)** |
-| 1 | Modèles de données et gestion des projets | En cours (voir `docs/PLAN.md`) |
+| 1 | Modèles de données et gestion des projets | **Fait** |
 | 2 | Bibliothèque de composants | À faire |
 | 3 | Moteur de calcul électrique | À faire |
 | 4 | Moteur batterie et autonomie | À faire |
@@ -92,7 +92,7 @@ Détail : `docs/PLAN.md`.
 
 ### 8. État d'avancement
 
-Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 en cours : API de gestion de projets et premiers écrans disponibles sur la branche `chatgpt`.
+Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis.
 
 ### 9. Démarrage rapide
 
@@ -185,7 +185,7 @@ Single source of truth: `docs/PLAN.md`.
 - Frontend: Vite + React + TS + Tailwind, FR/EN i18n, the 13-entry side navigation (pages are placeholders **clearly labelled "not implemented yet"** — no fake features), Vitest passing.
 - CI: GitHub Actions (backend + frontend).
 
-**Step 1 — IN PROGRESS** — versioned project management API, SQLite persistence, revision history, duplicate and JSON import/export endpoints. Tests and CI validation are still pending.
+**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.
 
 ### 8. Quick start
 
