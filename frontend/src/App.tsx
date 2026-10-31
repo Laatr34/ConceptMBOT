@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import PlaceholderPage from './pages/PlaceholderPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
+import LibraryPage from './pages/LibraryPage'
 import { NAV_ITEMS } from './navigation'
 export default function App() {
   return (
@@ -10,7 +11,8 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-        {NAV_ITEMS.filter((item) => item.path !== '/projects').map((item) => (
+        <Route path="/library" element={<LibraryPage />} />
+        {NAV_ITEMS.filter((item) => item.path !== '/projects' && item.path !== '/library').map((item) => (
           <Route key={item.path} path={item.path}
             element={<PlaceholderPage labelKey={item.labelKey} step={item.step} />} />
         ))}

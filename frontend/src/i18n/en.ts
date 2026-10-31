@@ -26,6 +26,23 @@ const en = {
     saveError: 'Save failed — check your connection', revisionHistory: 'Revision history',
     noHistory: 'No revision yet', projectId: 'Project ID', revision: 'Revision',
     schemaVersion: 'Document schema version',
+    libraryHint: 'Store component records from datasheets or your own verified measurements. The library starts empty.',
+    componentName: 'Component name', componentCategory: 'Category', manufacturer: 'Manufacturer',
+    modelReference: 'Model / reference', componentStatus: 'Data status', datasheetUrl: 'Datasheet URL',
+    creatingComponent: 'Adding…', addComponent: 'Add component', importComponent: 'Import JSON',
+    exportComponent: 'Export JSON', emptyLibrary: 'The component library is empty',
+    emptyLibraryHint: 'Add a component manually or import a component JSON document. No hardware values are prefilled.',
+    componentError: 'Unable to save or load the component library.',
+    componentImportError: 'Import failed. Check that the file is a valid component JSON document.',
+    confirmDeleteComponent: 'Delete this component? This action cannot be undone.',
+  },
+  componentCategory: {
+    controller: 'Controller', motor: 'Motor', battery: 'Battery', sensor: 'Sensor',
+    actuator: 'Actuator', power: 'Power', display: 'Display', audio: 'Audio',
+    mechanical: 'Mechanical', communication: 'Communication', other: 'Other',
+  },
+  componentStatus: {
+    verified: 'Verified datasheet', custom: 'Custom data', incomplete: 'Incomplete',
   },
   disclaimer: 'Results are design aids, not industrially certified calculations. Physical prototyping and measurement remain necessary.',
 } as const
