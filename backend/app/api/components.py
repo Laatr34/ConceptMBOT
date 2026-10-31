@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.application import component_service
 from app.application.component_service import ComponentNotFoundError
-from app.domain.components import ComponentCreate, ComponentDocument, ComponentSummary, ComponentUpdate
+from app.domain.components import (\n    ComponentCreate,\n    ComponentDocument,\n    ComponentSummary,\n    ComponentUpdate,\n)
 from app.infrastructure.database import get_session
 
 router = APIRouter(prefix="/api/components", tags=["components"])
