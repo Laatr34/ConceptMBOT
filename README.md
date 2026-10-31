@@ -26,6 +26,14 @@ Ambition : réduire les erreurs de conception, les dépenses inutiles et les mod
 
 Le robot visé par le projet est un **robot médiateur** (robot mobile évoluant parmi des visiteurs). Cela justifie notamment : robot différentiel, capteurs d'environnement (LiDAR 2D, ultrasons, caméra), zones interdites, simulation de déplacements de visiteurs, sécurité des personnes. Le détail du cahier des charges du robot (dimensions, composants réels, lieu d'usage) **n'est pas encore fourni** : ne pas l'inventer.
 
+### 3b. Matériel du robot (source de vérité)
+
+Le matériel physique du robot médiateur est fourni dans **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 11/09/2026, 35 références). Transcription lisible : `docs/hardware/BOM.md` ; copie exploitable par le code : `backend/app/data/museum_robot_bom.json`. **Il n'est pas nécessaire de renvoyer le PDF** : tout est dans le dépôt.
+
+Points essentiels : Raspberry Pi 5 (8 Go) + ESP32, 2 moteurs DC 12 V avec encodeurs (différentiel) + roue folle, 1 driver moteur (pont en H), LiDAR 2D, IMU 6 axes, 2–4 capteurs ToF, 2–4 bumpers, caméra USB 1080p, écran tactile 7–10″, matrice LED HUB75 32×16, micro USB, haut-parleur + ampli, 2 servos MG996R + PCA9685 (I2C), batterie 12 V + BMS, DC-DC 12→5 V (Pi/électronique) et 12→6 V (servos), fusibles, interrupteur général, arrêt d'urgence, châssis et supports.
+
+⚠️ **Le PDF est un inventaire : il ne contient AUCUNE caractéristique électrique ou mécanique** (tensions, courants, masses, couples…). Ces valeurs sont donc **inconnues** dans l'application (statut « incomplet ») et les calculs concernés renvoient « non évaluable ». Pour obtenir des résultats chiffrés, il faut saisir les fiches techniques réelles dans la bibliothèque. Le projet modèle `museum-robot` (`POST /projects/from-template/museum-robot`) instancie ces 35 références.
+
 ### 4. Règles non négociables
 
 1. Exactitude des calculs avant esthétique.
@@ -146,6 +154,14 @@ Ambition: reduce design errors, wasted spending and costly hardware changes.
 ### 3. Target robot
 
 The target is a **mediator robot** (a mobile robot operating among visitors). This motivates: differential drive, environment sensing (2D LiDAR, ultrasonic, camera), forbidden zones, visitor-movement simulation, and people safety. The robot's detailed specification (dimensions, real components, place of use) has **not been provided yet** — do not invent it.
+
+### 3b. Robot hardware (source of truth)
+
+The physical hardware of the mediator robot is provided in **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 2026-09-11, 35 references). Readable transcription: `docs/hardware/BOM.md`; code-readable copy: `backend/app/data/museum_robot_bom.json`. **There is no need to send the PDF again**: everything is in the repository.
+
+Key points: Raspberry Pi 5 (8 GB) + ESP32, 2 DC 12 V motors with encoders (differential drive) + caster, 1 motor driver (H-bridge), 2D LiDAR, 6-axis IMU, 2–4 ToF sensors, 2–4 bumpers, 1080p USB camera, 7–10″ touchscreen, HUB75 32×16 LED matrix, USB microphone, speaker + amplifier, 2 MG996R servos + PCA9685 (I2C), 12 V battery + BMS, DC-DC 12→5 V (Pi/electronics) and 12→6 V (servos), fuses, main switch, emergency stop, chassis and mounts.
+
+⚠️ **The PDF is an inventory: it contains NO electrical or mechanical specifications** (voltages, currents, masses, torques…). These values are therefore **unknown** in the app (status "incomplete") and dependent calculations return "not evaluable". To get numeric results, real datasheets must be entered in the component library. The `museum-robot` template project (`POST /projects/from-template/museum-robot`) instantiates these 35 references.
 
 ### 4. Non-negotiable rules
 

@@ -35,3 +35,6 @@ target-version = "py311"
 [tool.mypy]
 strict = true
 plugins = ["pydantic.mypy"]
+
+[tool.setuptools.package-data]
+"app.data" = ["*.json"]
