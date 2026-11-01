@@ -307,7 +307,7 @@ const fr: Dict = {
     noAnomalies: "Aucun dépassement des limites configurées n'a été détecté. Ce résultat n'est pas une certification.",
     severity: { info: 'Information / non vérifié', warning: 'Avertissement', error: 'Erreur' },
   },
-  battery: {
+  battery: { title: 'Batterie et autonomie',
     intro: 'Configurez la tension des cellules, les nombres en série/parallèle et les hypothèses de décharge. Les résultats distinguent autonomie théorique, estimée et mesurée.',
     groups: {
       cell: 'Configuration des cellules et du pack',
