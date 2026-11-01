@@ -14,8 +14,6 @@ from app.application import project_service
 from app.application.project_service import ProjectNotFoundError
 from app.domain.calc_result import CalcResult, ResultStatus
 from app.domain.projects import ProjectMechanicalData, ProjectMechanicalMassPoint
-from app.infrastructure.component_models import ComponentRecord
-from app.infrastructure.database import get_session
 from app.engines.mechanical import (
     CenterOfGravityResult,
     ContactPoint,
@@ -29,6 +27,8 @@ from app.engines.mechanical import (
     calculate_support_polygon_stability,
     calculate_three_contact_loads,
 )
+from app.infrastructure.component_models import ComponentRecord
+from app.infrastructure.database import get_session
 
 
 class MassPointInput(BaseModel):
@@ -319,8 +319,10 @@ def analyze_project_contacts(
                 formula="statically indeterminate for more than 3 contacts",
                 status=ResultStatus.NOT_EVALUABLE,
                 limits=[
-                    "Reactions are statically indeterminate with more than 3 contacts; "
-                    "support stiffness and suspension are not modelled."
+                    (
+                        "Reactions are statically indeterminate with more than 3 contacts; "
+                        "support stiffness and suspension are not modelled."
+                    )
                 ],
             )
             for contact in contacts
