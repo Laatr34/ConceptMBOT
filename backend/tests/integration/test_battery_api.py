@@ -94,6 +94,14 @@ def test_estimated_autonomy_requires_explicit_assumptions() -> None:
 def test_battery_analysis_rejects_invalid_integer_or_fraction_inputs(
     payload: dict[str, float],
 ) -> None:
+    baseline = {
+        "cell_voltage_v": 3.7,
+        "series_count": 3,
+        "cell_capacity_ah": 2.0,
+        "parallel_count": 2,
+        "depth_of_discharge": 0.8,
+        "efficiency": 0.9,
+    }
     with TestClient(app, raise_server_exceptions=False) as client:
-        response = client.post("/api/battery/analyze", json=payload)
+        response = client.post("/api/battery/analyze", json={**baseline, **payload})
     assert response.status_code == 422
