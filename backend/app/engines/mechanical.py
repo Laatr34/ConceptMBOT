@@ -409,3 +409,197 @@ def calculate_static_stability(
         ),
         status=stability,
     )
+
+
+# --------------------------------------------------------------------------- support polygon
+@dataclass(frozen=True)
+class ContactPoint:
+    """Ground contact of a wheel/caster in the robot frame (x forward, y left, metres)."""
+
+    name: str
+    x_m: float
+    y_m: float
+
+
+class ThreeContactLoads(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    loads: list[CalcResult]  # same order as the input contacts, newtons
+
+
+class SupportPolygonStabilityResult(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    margin_m: CalcResult
+    status: StabilityStatus
+
+
+def _require_contacts(contacts: list[ContactPoint], *, exactly: int | None = None) -> None:
+    if exactly is not None and len(contacts) != exactly:
+        raise InvalidInputError(f"exactly {exactly} contacts are required, got {len(contacts)}")
+    if len(contacts) < 3:
+        raise InvalidInputError("at least 3 contacts are required")
+    for contact in contacts:
+        if not (math.isfinite(contact.x_m) and math.isfinite(contact.y_m)):
+            raise InvalidInputError(f"contact {contact.name}: coordinates must be finite")
+
+
+def _cross(o: tuple[float, float], a: tuple[float, float], b: tuple[float, float]) -> float:
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+
+def convex_hull(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Counter-clockwise convex hull (Andrew's monotone chain); collinear points removed."""
+
+    pts = sorted(set(points))
+    if len(pts) <= 2:
+        return pts
+    lower: list[tuple[float, float]] = []
+    for p in pts:
+        while len(lower) >= 2 and _cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    upper: list[tuple[float, float]] = []
+    for p in reversed(pts):
+        while len(upper) >= 2 and _cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    return lower[:-1] + upper[:-1]
+
+
+def calculate_three_contact_loads(
+    *,
+    mass_kg: float | None,
+    cg_x_m: float | None,
+    cg_y_m: float | None,
+    contacts: list[ContactPoint],
+) -> ThreeContactLoads:
+    """Static reactions on exactly three ground contacts (statically determinate).
+
+    Solves  ΣR = Mg,  ΣR·x = Mg·xcg,  ΣR·y = Mg·ycg  (Cramer's rule). Valid for any
+    non-collinear triangle, e.g. two drive wheels plus one caster.
+    """
+
+    _require_contacts(contacts, exactly=3)
+    inputs: dict[str, float | None] = {"mass_kg": mass_kg, "cg_x_m": cg_x_m, "cg_y_m": cg_y_m}
+    for c in contacts:
+        inputs[f"{c.name}.x_m"] = c.x_m
+        inputs[f"{c.name}.y_m"] = c.y_m
+    formula = "R1+R2+R3 = Mg ; ΣRi·xi = Mg·xcg ; ΣRi·yi = Mg·ycg"
+    missing = [k for k in ("mass_kg", "cg_x_m", "cg_y_m") if inputs[k] is None]
+    if missing:
+        return ThreeContactLoads(
+            loads=[
+                _not_evaluable(
+                    name=f"mechanical.contact_load.{c.name}",
+                    unit="N",
+                    formula=formula,
+                    inputs=inputs,
+                    missing=missing,
+                )
+                for c in contacts
+            ]
+        )
+    assert mass_kg is not None and cg_x_m is not None and cg_y_m is not None
+    require_positive("mass_kg", mass_kg)
+    if not (math.isfinite(cg_x_m) and math.isfinite(cg_y_m)):
+        raise InvalidInputError("center-of-gravity coordinates must be finite")
+
+    (x1, y1), (x2, y2), (x3, y3) = [(c.x_m, c.y_m) for c in contacts]
+    det = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)  # 2 × triangle area
+    if abs(det) < 1e-12:
+        raise InvalidInputError("the three contacts are collinear: no stable support")
+    weight = mass_kg * STANDARD_GRAVITY_M_S2
+    # Barycentric coordinates of the CoG in the contact triangle; Ri = W · λi.
+    l1 = ((x2 - cg_x_m) * (y3 - cg_y_m) - (x3 - cg_x_m) * (y2 - cg_y_m)) / det
+    l2 = ((x3 - cg_x_m) * (y1 - cg_y_m) - (x1 - cg_x_m) * (y3 - cg_y_m)) / det
+    l3 = 1.0 - l1 - l2
+    assumptions = [
+        "Rigid chassis in static equilibrium on flat ground.",
+        "Exactly three contacts: reactions are fully determined by statics (no stiffness assumption).",
+        "Dynamic load transfer, suspension and structural flex are excluded.",
+    ]
+    limits = [
+        "A negative reaction means that contact would lift off: the CoG is outside the support triangle."
+    ]
+    return ThreeContactLoads(
+        loads=[
+            _result(
+                name=f"mechanical.contact_load.{c.name}",
+                value=weight * lam,
+                unit="N",
+                formula=formula,
+                inputs=inputs,
+                assumptions=assumptions,
+                limits=limits,
+            )
+            for c, lam in zip(contacts, (l1, l2, l3), strict=True)
+        ]
+    )
+
+
+def calculate_support_polygon_stability(
+    *,
+    cg_x_m: float | None,
+    cg_y_m: float | None,
+    contacts: list[ContactPoint],
+) -> SupportPolygonStabilityResult:
+    """Static margin = signed distance from the projected CoG to the nearest hull edge.
+
+    Positive inside the support polygon, negative outside. Works for 3 or more contacts.
+    """
+
+    _require_contacts(contacts)
+    inputs: dict[str, float | None] = {"cg_x_m": cg_x_m, "cg_y_m": cg_y_m}
+    for c in contacts:
+        inputs[f"{c.name}.x_m"] = c.x_m
+        inputs[f"{c.name}.y_m"] = c.y_m
+    formula = "m = min over hull edges of signed distance(CoG, edge)"
+    missing = [k for k in ("cg_x_m", "cg_y_m") if inputs[k] is None]
+    if missing:
+        return SupportPolygonStabilityResult(
+            margin_m=_not_evaluable(
+                name="mechanical.support_polygon_margin",
+                unit="m",
+                formula=formula,
+                inputs=inputs,
+                missing=missing,
+            ),
+            status=StabilityStatus.UNKNOWN,
+        )
+    assert cg_x_m is not None and cg_y_m is not None
+    if not (math.isfinite(cg_x_m) and math.isfinite(cg_y_m)):
+        raise InvalidInputError("center-of-gravity coordinates must be finite")
+    hull = convex_hull([(c.x_m, c.y_m) for c in contacts])
+    if len(hull) < 3:
+        raise InvalidInputError("contacts are collinear: no support polygon")
+    margin = math.inf
+    for i, a in enumerate(hull):
+        b = hull[(i + 1) % len(hull)]
+        length = math.hypot(b[0] - a[0], b[1] - a[1])
+        margin = min(margin, _cross(a, b, (cg_x_m, cg_y_m)) / length)  # CCW hull: inside > 0
+    if margin < 0.0:
+        status = StabilityStatus.UNSTABLE
+    elif margin == 0.0:
+        status = StabilityStatus.MARGINAL
+    else:
+        status = StabilityStatus.STABLE
+    return SupportPolygonStabilityResult(
+        margin_m=_result(
+            name="mechanical.support_polygon_margin",
+            value=margin,
+            unit="m",
+            formula=formula,
+            inputs=inputs,
+            assumptions=[
+                "Static projection of the CoG onto the convex hull of the ground contacts."
+            ],
+            limits=[
+                (
+                    "Margin is a geometric distance, not a tip-over safety factor: "
+                    "it ignores CoG height, slopes, acceleration and braking."
+                )
+            ],
+        ),
+        status=status,
+    )
