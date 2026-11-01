@@ -5,11 +5,13 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from app.api.components import router as components_router
 from app.api.mechanical import router as mechanical_router
 from app.api.projects import router as projects_router
+from app.domain.units import InvalidInputError
 from app.infrastructure import component_models, project_models  # noqa: F401
 from app.infrastructure.database import Base, engine
 
@@ -29,6 +31,12 @@ app = FastAPI(
 app.include_router(projects_router)
 app.include_router(components_router)
 app.include_router(mechanical_router)
+
+
+@app.exception_handler(InvalidInputError)
+async def invalid_input_handler(_: Request, exc: InvalidInputError) -> JSONResponse:
+    """Physically impossible inputs are client errors, never a 500."""
+    return JSONResponse(status_code=422, content={"detail": str(exc)})
 
 
 @app.get("/health", tags=["system"])

@@ -41,3 +41,17 @@ def test_mechanical_analysis_keeps_unknown_mass_unknown() -> None:
     assert result["center_of_gravity"]["total_mass"]["value"] is None
     assert result["wheel_loads"]["front_left_n"]["value"] is None
     assert result["stability"]["status"] == "unknown"
+
+
+def test_physically_invalid_input_returns_422_not_500() -> None:
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.post(
+            "/api/mechanical/analyze",
+            json={
+                "mass_points": [{"name": "p", "mass_kg": 1.0, "x_m": 0.0, "y_m": 0.0, "z_m": 0.0}],
+                "wheelbase_m": -0.5,
+                "track_width_m": 0.4,
+            },
+        )
+    assert response.status_code == 422
+    assert "wheelbase_m" in response.json()["detail"]
