@@ -29,8 +29,14 @@ describe('App shell', () => {
     expect(screen.getByRole('heading', { name: '1. What is RobotLab Web?' })).toBeInTheDocument()
   })
 
-  it('labels unimplemented modules explicitly (no fake features)', () => {
+  it('opens the electrical analysis module', () => {
     renderAt('/electrical')
+    expect(screen.getByRole('heading', { name: 'Electrical Design' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Analyze electrical design' })).toBeInTheDocument()
+  })
+
+  it('labels unimplemented modules explicitly (no fake features)', () => {
+    renderAt('/sensors')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
   })
 
