@@ -12,18 +12,32 @@ const STATUS_STYLE: Record<StabilityStatus, { stroke: string; dash?: string }> =
 export interface TopViewProps {
   wheelbase_m: number | null
   track_width_m: number | null
+  /** Convex support polygon (contacts mode). Takes precedence over the rectangle. */
+  polygon?: Point2D[] | null
   cog: Point2D | null
   points: Point2D[]
   status: StabilityStatus
 }
 
 /** 2D top view to scale. Status is conveyed by stroke style AND text, never by colour alone. */
-export default function TopView({ wheelbase_m, track_width_m, cog, points, status }: TopViewProps) {
+export default function TopView({
+  wheelbase_m,
+  track_width_m,
+  polygon,
+  cog,
+  points,
+  status,
+}: TopViewProps) {
   const { t } = useTranslation()
+  const hasPolygon = !!polygon && polygon.length >= 3
+  if (hasPolygon) {
+    wheelbase_m = 2 * Math.max(...polygon.map((p) => Math.abs(p.x_m)), 1e-9)
+    track_width_m = 2 * Math.max(...polygon.map((p) => Math.abs(p.y_m)), 1e-9)
+  }
   if (!isPositiveFinite(wheelbase_m) || !isPositiveFinite(track_width_m)) {
     return <p className="text-sm text-slate-600">{t('mechanical.viewNeedsDims')}</p>
   }
-  const all = cog ? [...points, cog] : points
+  const all = [...(cog ? [cog] : []), ...points, ...(hasPolygon ? polygon : [])]
   const tr = makeTransform(all, wheelbase_m, track_width_m)
   const tl = tr.toSvg({ x_m: wheelbase_m / 2, y_m: track_width_m / 2 })
   const br = tr.toSvg({ x_m: -wheelbase_m / 2, y_m: -track_width_m / 2 })
@@ -36,6 +50,21 @@ export default function TopView({ wheelbase_m, track_width_m, cog, points, statu
         viewBox={`0 0 ${tr.width} ${tr.height}`}
         className="w-full max-w-md rounded border border-slate-300 bg-white"
       >
+        {hasPolygon ? (
+          <polygon
+            data-testid="support-polygon"
+            points={polygon
+              .map((p) => {
+                const s = tr.toSvg(p)
+                return `${s.x},${s.y}`
+              })
+              .join(' ')}
+            fill="none"
+            stroke={style.stroke}
+            strokeWidth={2}
+            strokeDasharray={style.dash}
+          />
+        ) : (
         <rect
           data-testid="support-rect"
           x={tl.x}
@@ -47,6 +76,7 @@ export default function TopView({ wheelbase_m, track_width_m, cog, points, statu
           strokeWidth={2}
           strokeDasharray={style.dash}
         />
+        )}
         <text x={tr.width / 2} y={14} textAnchor="middle" fontSize={12} fill="#334155">
           ↑ {t('mechanical.front')}
         </text>

@@ -4,8 +4,9 @@ import type { CalcResult } from '../mechanical/api'
 const NUMBER = new Intl.NumberFormat(undefined, { maximumSignificantDigits: 6 })
 
 export interface CalcRow {
-  /** i18n key of the human label */
-  labelKey: string
+  /** i18n key of the human label (or use a ready-made `label`) */
+  labelKey?: string
+  label?: string
   result: CalcResult
 }
 
@@ -25,11 +26,11 @@ export default function CalcResultTable({ rows }: { rows: CalcRow[] }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map(({ labelKey, result }) => {
+          {rows.map(({ labelKey, label, result }) => {
             const unknown = result.value === null
             return (
               <tr key={result.name} className="border-b border-slate-200 align-top">
-                <td className="p-2 font-medium">{t(labelKey)}</td>
+                <td className="p-2 font-medium">{label ?? (labelKey ? t(labelKey) : result.name)}</td>
                 <td className="p-2 whitespace-nowrap">
                   {unknown ? (
                     <span className="text-amber-800">{t('mechanical.notEvaluable')}</span>

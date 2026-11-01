@@ -140,4 +140,68 @@ describe('MechanicalPage', () => {
     expect(screen.getByRole('heading', { name: 'Analyse mécanique' })).toBeInTheDocument()
     expect(screen.getByRole('note')).toHaveTextContent('QUATRE contacts')
   })
+
+  describe('contacts mode (2 drive wheels + caster)', () => {
+    const contactsResponse = {
+      center_of_gravity: stableResponse.center_of_gravity,
+      contact_loads: [
+        calc('mechanical.contact_load.left_wheel', 36.8, 'N'),
+        calc('mechanical.contact_load.right_wheel', 36.8, 'N'),
+        calc('mechanical.contact_load.caster', 24.5, 'N'),
+      ],
+      stability: { margin_m: calc('mechanical.support_polygon_margin', 0.05, 'm'), status: 'stable' },
+    }
+
+    async function fillContacts() {
+      await userEvent.click(screen.getByLabelText(/Contacts \(any layout/))
+      const set = async (label: string, value: string) => userEvent.type(screen.getByLabelText(label), value)
+      await set('x (m) Ground contacts 1', '0')
+      await set('y (m) Ground contacts 1', '0.15')
+      await set('x (m) Ground contacts 2', '0')
+      await set('y (m) Ground contacts 2', '-0.15')
+      await set('x (m) Ground contacts 3', '-0.2')
+      await set('y (m) Ground contacts 3', '0')
+    }
+
+    it('shows the contacts note and hides the rectangle fields', async () => {
+      render(<MechanicalPage />)
+      await userEvent.click(screen.getByLabelText(/Contacts \(any layout/))
+      expect(screen.getByRole('note')).toHaveTextContent('Exact loads for exactly 3 contacts')
+      expect(screen.queryByLabelText('Wheelbase L (m)')).not.toBeInTheDocument()
+      expect(screen.getByDisplayValue('caster')).toBeInTheDocument()
+    })
+
+    it('blocks submission while contact coordinates are empty (never defaulted to 0)', async () => {
+      const fetchMock = mockFetch(contactsResponse)
+      render(<MechanicalPage />)
+      await userEvent.click(screen.getByLabelText(/Contacts \(any layout/))
+      await userEvent.click(screen.getByRole('button', { name: 'Analyze' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent('left_wheel x')
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    it('posts contacts, draws the support polygon and lists each contact load', async () => {
+      const fetchMock = mockFetch(contactsResponse)
+      render(<MechanicalPage />)
+      await userEvent.type(screen.getByLabelText('Mass (kg) 1'), '10')
+      await userEvent.type(screen.getByLabelText('x (m) 1'), '-0.05')
+      await userEvent.type(screen.getByLabelText('y (m) 1'), '0')
+      await userEvent.type(screen.getByLabelText('z (m) 1'), '0.2')
+      await fillContacts()
+      await userEvent.click(screen.getByRole('button', { name: 'Analyze' }))
+      expect(await screen.findByTestId('support-polygon')).toBeInTheDocument()
+      expect(screen.queryByTestId('support-rect')).not.toBeInTheDocument()
+      expect(fetchMock.mock.calls[0][0]).toBe('/api/mechanical/analyze-contacts')
+      const body = JSON.parse(fetchMock.mock.calls[0][1].body)
+      expect(body.contacts).toEqual([
+        { name: 'left_wheel', x_m: 0, y_m: 0.15 },
+        { name: 'right_wheel', x_m: 0, y_m: -0.15 },
+        { name: 'caster', x_m: -0.2, y_m: 0 },
+      ])
+      expect(screen.getByText('Load on caster')).toBeInTheDocument()
+      expect(screen.getByText('24.5 N')).toBeInTheDocument()
+      expect(screen.getByText('0.05 m')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Static stability: Stable' })).toBeInTheDocument()
+    })
+  })
 })
