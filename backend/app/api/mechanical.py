@@ -2,10 +2,20 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter
-from pydantic import BaseModel, ConfigDict, Field
+import math
+from typing import Literal
+from uuid import UUID
 
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
+from sqlalchemy.orm import Session
+
+from app.application import project_service
+from app.application.project_service import ProjectNotFoundError
 from app.domain.calc_result import CalcResult, ResultStatus
+from app.domain.projects import ProjectMechanicalData
+from app.infrastructure.component_models import ComponentRecord
+from app.infrastructure.database import get_session
 from app.engines.mechanical import (
     CenterOfGravityResult,
     ContactPoint,
@@ -64,6 +74,18 @@ class ContactsAnalysisResponse(BaseModel):
     center_of_gravity: CenterOfGravityResult
     contact_loads: list[CalcResult]
     stability: SupportPolygonStabilityResult
+
+
+class ProjectMassSource(BaseModel):
+    name: str
+    source: Literal["project_override", "verified_component_parameter", "unknown"]
+    component_id: UUID | None = None
+    source_page: str | None = None
+    detail: str | None = None
+
+
+class ProjectContactsAnalysisResponse(ContactsAnalysisResponse):
+    mass_sources: list[ProjectMassSource]
 
 
 router = APIRouter(prefix="/api/mechanical", tags=["mechanical"])
@@ -146,3 +168,167 @@ def analyze_mechanical_contacts(payload: ContactsAnalysisInput) -> ContactsAnaly
             for c in contacts
         ]
     return ContactsAnalysisResponse(center_of_gravity=cog, contact_loads=loads, stability=stability)
+
+
+
+def _resolve_project_mass(
+    session: Session, point: ProjectMechanicalData
+) -> tuple[float | None, ProjectMassSource]:
+    """Use an explicit project mass first, otherwise one owner-verified kg parameter."""
+
+    if point.mass_kg is not None:
+        return point.mass_kg, ProjectMassSource(
+            name=point.name,
+            source="project_override",
+            component_id=point.component_id,
+            detail="Mass entered directly in this project.",
+        )
+    if point.component_id is None:
+        return None, ProjectMassSource(
+            name=point.name,
+            source="unknown",
+            detail="No project mass or linked component was provided.",
+        )
+
+    component = session.get(ComponentRecord, str(point.component_id))
+    if component is None:
+        return None, ProjectMassSource(
+            name=point.name,
+            source="unknown",
+            component_id=point.component_id,
+            detail="Linked component does not exist in the library.",
+        )
+    if component.status != "verified":
+        return None, ProjectMassSource(
+            name=point.name,
+            source="unknown",
+            component_id=point.component_id,
+            detail="Linked component is not declared owner-verified.",
+        )
+
+    parameters = component.document.get("parameters", [])
+    matches = [
+        parameter
+        for parameter in parameters
+        if isinstance(parameter, dict)
+        and parameter.get("name") == "mass"
+        and parameter.get("unit") == "kg"
+    ]
+    if len(matches) != 1:
+        return None, ProjectMassSource(
+            name=point.name,
+            source="unknown",
+            component_id=point.component_id,
+            detail="Expected exactly one numeric 'mass' parameter with unit 'kg'.",
+        )
+
+    parameter = matches[0]
+    value = parameter.get("value")
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(float(value))
+        or value <= 0
+    ):
+        return None, ProjectMassSource(
+            name=point.name,
+            source="unknown",
+            component_id=point.component_id,
+            source_page=parameter.get("source_page"),
+            detail="The verified component mass parameter is missing or not a positive finite number.",
+        )
+
+    return float(value), ProjectMassSource(
+        name=point.name,
+        source="verified_component_parameter",
+        component_id=point.component_id,
+        source_page=parameter.get("source_page"),
+        detail="Resolved from the component's owner-verified mass parameter (kg).",
+    )
+
+
+@router.post(
+    "/projects/{project_id}/analyze-contacts",
+    response_model=ProjectContactsAnalysisResponse,
+)
+def analyze_project_contacts(
+    project_id: UUID,
+    session: Session = Depends(get_session),
+) -> ProjectContactsAnalysisResponse:
+    """Analyse the saved project layout, resolving only explicit or verified masses."""
+
+    try:
+        project = project_service.get_project(session, project_id)
+    except ProjectNotFoundError as error:
+        raise HTTPException(status_code=404, detail="Project not found") from error
+
+    layout = ProjectMechanicalData.model_validate(project.data["mechanical"])
+    if len(layout.contacts) < 3:
+        raise HTTPException(
+            status_code=422,
+            detail="At least three configured ground contacts are required for support-polygon analysis.",
+        )
+    missing_contacts = [
+        f"{contact.name}.{field}"
+        for contact in layout.contacts
+        for field in ("x_m", "y_m")
+        if getattr(contact, field) is None
+    ]
+    if missing_contacts:
+        raise HTTPException(
+            status_code=422,
+            detail={"message": "Ground-contact coordinates are incomplete.", "missing_inputs": missing_contacts},
+        )
+
+    resolved_points: list[MassPoint] = []
+    mass_sources: list[ProjectMassSource] = []
+    for point in layout.mass_points:
+        mass_kg, source = _resolve_project_mass(session, point)
+        mass_sources.append(source)
+        resolved_points.append(
+            MassPoint(
+                name=point.name,
+                mass_kg=mass_kg,
+                x_m=point.x_m,
+                y_m=point.y_m,
+                z_m=point.z_m,
+            )
+        )
+
+    contacts = [
+        ContactPoint(contact.name, contact.x_m, contact.y_m)
+        for contact in layout.contacts
+        if contact.x_m is not None and contact.y_m is not None
+    ]
+    cog = calculate_center_of_gravity(resolved_points)
+    stability = calculate_support_polygon_stability(
+        cg_x_m=cog.x_m.value, cg_y_m=cog.y_m.value, contacts=contacts
+    )
+    if len(contacts) == 3:
+        loads = calculate_three_contact_loads(
+            mass_kg=cog.total_mass.value,
+            cg_x_m=cog.x_m.value,
+            cg_y_m=cog.y_m.value,
+            contacts=contacts,
+        ).loads
+    else:
+        loads = [
+            CalcResult(
+                name=f"mechanical.contact_load.{contact.name}",
+                value=None,
+                unit="N",
+                formula="statically indeterminate for more than 3 contacts",
+                status=ResultStatus.NOT_EVALUABLE,
+                limits=[
+                    "Reactions are statically indeterminate with more than 3 contacts; "
+                    "support stiffness and suspension are not modelled."
+                ],
+            )
+            for contact in contacts
+        ]
+    return ProjectContactsAnalysisResponse(
+        center_of_gravity=cog,
+        contact_loads=loads,
+        stability=stability,
+        mass_sources=mass_sources,
+    )
