@@ -53,6 +53,11 @@ const fr: Dict = {
   },
   mechanical: {
     title: 'Analyse mécanique',
+    openProject: 'Ouvrir la conception mécanique',
+    projectContext: 'Modification de la configuration mécanique enregistrée dans ce projet.',
+    projectLoading: 'Chargement de la configuration mécanique du projet…',
+    projectSaved: 'Configuration mécanique enregistrée dans le projet.',
+    projectLoadError: 'Impossible de charger la configuration mécanique de ce projet.',
     intro: "Masse totale, centre de gravité, charges par roue et stabilité statique. Calculés par le backend ; laissez un champ vide si la valeur est inconnue — elle ne sera jamais remplacée par une valeur par défaut.",
     modelWarningTitle: 'Limite du modèle',
     modelWarning: "Ce modèle suppose QUATRE contacts de roues coplanaires formant un rectangle centré sur l'origine (x vers l'avant, y vers la gauche). Un robot à deux roues motrices et une roue folle (3 contacts) n'est PAS représenté fidèlement. Corps rigide, statique, sol plan : ni transfert de charge dynamique, ni suspension, ni analyse structurelle.",
