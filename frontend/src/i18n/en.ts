@@ -1,7 +1,7 @@
 const en = {
   app: { name: 'RobotLab Web', tagline: 'Virtual robotics design studio' },
   nav: {
-    dashboard: 'Dashboard', projects: 'My projects', robotStudio: 'Robot Studio',
+    dashboard: 'Dashboard', projects: 'My projects', robotStudio: 'Robot Studio', documentation: 'Documentation',
     mechanical: 'Mechanical Design', electrical: 'Electrical Design',
     power: 'Power & Battery', motorization: 'Motorization',
     sensors: 'Sensors & Electronics', simulation: '2D Simulation',
@@ -102,6 +102,113 @@ const en = {
     },
     resultStatus: { theoretical: 'Theoretical', estimated: 'Estimated', measured: 'Measured', not_evaluable: 'Not evaluable' },
     stabilityStatus: { unknown: 'Unknown', stable: 'Stable', marginal: 'Marginal', unstable: 'Unstable' },
+  },
+  documentation: {
+    eyebrow: 'SOFTWARE GUIDE',
+    title: 'RobotLab Web documentation',
+    intro: 'A practical guide to the current application: what it can do today, how its data and calculations are handled, and which parts are still under development.',
+    version: 'Living documentation · updated with the application',
+    contents: 'On this page',
+    nav: {
+      overview: 'Overview', workflow: 'Recommended workflow', architecture: 'Architecture',
+      modules: 'Modules and status', data: 'Projects and component data',
+      calculations: 'Calculation rules', api: 'Backend API', limits: 'Limits and safety',
+      roadmap: 'Roadmap', development: 'Run and develop',
+    },
+    overview: {
+      title: '1. What is RobotLab Web?',
+      body: 'RobotLab Web is a browser-based engineering workspace for planning a robot, organizing its component data and running traceable engineering calculations. The long-term goal is to cover design, sizing, diagnostics, simulation and reporting. The current application is a work in progress, not a complete engineering suite.',
+      cards: {
+        design: { title: 'Organize', body: 'Create robot projects and keep their design data together.' },
+        calculate: { title: 'Calculate', body: 'Use backend calculation engines; the browser does not invent technical results.' },
+        verify: { title: 'Review', body: 'Inspect result status, assumptions, missing inputs and model limitations.' },
+      },
+    },
+    workflow: {
+      title: '2. Recommended workflow',
+      body: 'Start with a project, add only information supported by a datasheet or a physical measurement, then run the available analysis.',
+      steps: {
+        project: { title: 'Create a project', body: 'Give it a name and description. Project documents are versioned and can be exported as JSON.' },
+        library: { title: 'Build the component library', body: 'Enter the exact model, datasheet URL, parameters, units and missing fields. Keep unknown values null.' },
+        design: { title: 'Enter the design', body: 'For the available mechanical analysis, enter mass points and ground-contact coordinates.' },
+        review: { title: 'Review before using', body: 'Check statuses, assumptions and limits. A theoretical result is not a physical validation.' },
+      },
+    },
+    architecture: {
+      title: '3. Software architecture',
+      body: 'The repository is a monorepo. The frontend is the user interface; the backend owns validation, persistence and engineering calculations.',
+      rule: 'Important rule: keep technical calculations in backend/app/engines. Frontend modules call the API and display its response; they must not duplicate engineering formulas.',
+    },
+    modules: {
+      title: '4. Modules and implementation status',
+      body: 'Status reflects the current implementation plan. “In progress” means a usable part exists but the module is not complete. “Planned” means there is no operational feature yet.',
+      items: {
+        projects: { title: 'Project management', body: 'Create, list, open, duplicate and delete projects; JSON import/export, autosave, revision history and versioned project data.' },
+        library: { title: 'Component library', body: 'Structured component records, manufacturer/model fields, datasheet URL, parameter values with units, missing fields and owner-declared data status.' },
+        mechanical: { title: 'Mechanical design', body: 'Mass points, centre of gravity, wheel/support loads, static support analysis and a 2D top view. Project-linked layout and component mass provenance are being completed and validated.' },
+        electrical: { title: 'Electrical design', body: 'Electrical calculation engine is under development. The complete API workflow and user page are not yet available.' },
+        battery: { title: 'Battery and autonomy', body: 'Battery pack and autonomy engine work is in progress; the complete user workflow and validation remain to be finished.' },
+        motorization: { title: 'Motorization', body: 'A differential-drive calculation engine exists, but the API, project integration and frontend page remain to be implemented.' },
+        diagnostics: { title: 'Diagnostics', body: 'Centralized severity levels and structured warnings are planned.' },
+        circuit: { title: 'Visual circuit editor', body: 'A graph model for components, pins and electrical nets is planned before the visual editor.' },
+        sensors: { title: 'Sensors and interfaces', body: 'Logic-level compatibility, GPIO limits and interface checks are planned.' },
+        simulation: { title: '2D simulation', body: 'A deterministic fixed-step simulation with seeded randomness, collisions and LiDAR ray casting is planned.' },
+        reports: { title: 'Reports', body: 'PDF and CSV report generation is planned.' },
+      },
+    },
+    status: { done: 'Implemented', partial: 'In progress', planned: 'Planned' },
+    data: {
+      title: '5. Projects and component data',
+      body: 'Project data and hardware reference data have different roles. Keep them linked deliberately and preserve the source of each value.',
+      cards: {
+        projects: { title: 'Projects', body: 'A project is a versioned JSON document with an identifier, description, timestamps and revision history. The mechanical layout can be saved with mass points and ground contacts.' },
+        components: { title: 'Component library', body: 'The library starts empty. Each parameter should carry a value, unit and source page where available. Missing fields are explicit; unknown data is not replaced with guessed defaults.' },
+      },
+    },
+    calculations: {
+      title: '6. Calculation and result rules',
+      body: 'The backend returns structured results rather than unqualified numbers. Review the metadata alongside every value.',
+      rules: {
+        unknown: 'Unknown input stays null. Never enter zero just to make a calculation run.',
+        traceable: 'A result should expose its unit, formula, inputs, assumptions and source context.',
+        status: 'Distinguish theoretical, estimated and measured results. Not evaluable is a valid outcome.',
+        limits: 'When an input is missing or a model assumption is not supported, the result must explain the missing input or limitation.',
+      },
+    },
+    api: {
+      title: '7. Backend API',
+      body: 'The frontend sends requests to the /api routes. During local development, Vite proxies /api to the FastAPI server on port 8000.',
+      swagger: 'Interactive API reference generated by FastAPI (available while the backend is running).',
+    },
+    limits: {
+      title: '8. Limits and safe use',
+      warning: 'RobotLab Web is a design aid. It is not a certified engineering tool and must not be used as the sole basis for decisions that could endanger people or equipment.',
+      items: {
+        notCertified: 'All results require independent review and physical prototyping/measurement before a real robot is operated.',
+        datasheets: 'A “verified” component status is declared by the project owner. The application does not independently authenticate manufacturer datasheets.',
+        mechanics: 'The current mechanical model is static and simplified. Its support margin is geometric; it does not model centre-of-gravity height effects, slopes, acceleration, braking, suspension or structural strength.',
+        notImplemented: 'Navigation entries that are not implemented are labelled as planned or not implemented. Do not treat them as working modules.',
+      },
+    },
+    roadmap: {
+      title: '9. Roadmap',
+      body: 'The development plan is maintained in the repository. Its status should only be changed to DONE after the required tests and checks have actually passed.',
+      link: 'Open the detailed development plan',
+    },
+    development: {
+      title: '10. Run and develop locally',
+      body: 'Requirements: Python 3.13 or newer and Node.js 22. Use two terminals from the repository root.',
+      backend: {
+        title: 'Backend · terminal 1',
+        commands: 'cd backend\npython -m venv .venv\nsource .venv/bin/activate\npip install -e ".[dev]"\nuvicorn app.main:app --reload',
+      },
+      frontend: {
+        title: 'Frontend · terminal 2',
+        commands: 'cd frontend\nnpm ci\nnpm run dev',
+      },
+      final: 'Frontend: http://localhost:5173 · Backend health: http://localhost:8000/health · API reference: http://localhost:8000/docs. Before committing, run backend Ruff/format/mypy/pytest and frontend lint/typecheck/test/build checks.',
+    },
+    footer: 'Documentation describes the implementation currently present in this branch. See docs/PLAN.md and the source code for the latest detailed status.',
   },
   disclaimer: 'Results are design aids, not industrially certified calculations. Physical prototyping and measurement remain necessary.',
 } as const
