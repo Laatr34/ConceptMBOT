@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildInput, parseOptionalNumber, type Row } from './input'
+import { buildContactsInput, buildInput, parseOptionalNumber, type Row } from './input'
 
 const row = (over: Partial<Row> = {}): Row => ({ id: 1, name: '', mass: '', x: '', y: '', z: '', ...over })
 
@@ -35,5 +35,21 @@ describe('buildInput', () => {
   it('reports every invalid field instead of sending partial data', () => {
     const built = buildInput([row({ mass: 'x', y: 'oops' })], 'abc', '')
     expect(built).toEqual({ invalid: ['#1 mass', '#1 y', 'wheelbase'] })
+  })
+})
+
+describe('buildContactsInput', () => {
+  const c = (name: string, x: string, y: string) => ({ id: 1, name, x, y })
+  it('builds numeric contacts', () => {
+    const built = buildContactsInput([row({ mass: '1', x: '0', y: '0', z: '0' })], [c('a', '0', '0.15'), c('b', '-0.2', '0')])
+    expect(built).toEqual({
+      input: {
+        mass_points: [{ name: '#1', mass_kg: 1, x_m: 0, y_m: 0, z_m: 0 }],
+        contacts: [{ name: 'a', x_m: 0, y_m: 0.15 }, { name: 'b', x_m: -0.2, y_m: 0 }],
+      },
+    })
+  })
+  it('rejects empty contact coordinates instead of using 0', () => {
+    expect(buildContactsInput([], [c('caster', '', '0')])).toEqual({ invalid: ['caster x'] })
   })
 })

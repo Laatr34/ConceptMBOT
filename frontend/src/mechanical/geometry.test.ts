@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isPositiveFinite, makeTransform } from './geometry'
+import { convexHull, isPositiveFinite, makeTransform } from './geometry'
 
 describe('2D view transform', () => {
   it('puts the origin at the centre of the view', () => {
@@ -39,5 +39,19 @@ describe('2D view transform', () => {
     for (const v of [0, -1, null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
       expect(isPositiveFinite(v)).toBe(false)
     }
+  })
+})
+
+describe('convexHull (drawing only)', () => {
+  it('drops interior and duplicate points', () => {
+    const hull = convexHull([
+      { x_m: 0, y_m: 0 }, { x_m: 1, y_m: 0 }, { x_m: 1, y_m: 1 }, { x_m: 0, y_m: 1 },
+      { x_m: 0.5, y_m: 0.5 }, { x_m: 1, y_m: 1 },
+    ])
+    expect(hull).toHaveLength(4)
+  })
+  it('returns a triangle for three contacts', () => {
+    const hull = convexHull([{ x_m: 0, y_m: 0.15 }, { x_m: 0, y_m: -0.15 }, { x_m: -0.2, y_m: 0 }])
+    expect(hull).toHaveLength(3)
   })
 })

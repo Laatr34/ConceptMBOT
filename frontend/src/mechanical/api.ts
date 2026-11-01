@@ -47,16 +47,38 @@ export interface MechanicalAnalysis {
   }
 }
 
+export interface ContactInput {
+  name: string
+  x_m: number
+  y_m: number
+}
+
+export interface ContactsAnalysisInput {
+  mass_points: MassPointInput[]
+  contacts: ContactInput[]
+}
+
+export interface ContactsAnalysis {
+  center_of_gravity: MechanicalAnalysis['center_of_gravity']
+  contact_loads: CalcResult[]
+  stability: { margin_m: CalcResult; status: StabilityStatus }
+}
+
+async function post<T>(path: string, payload: unknown): Promise<T> {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) {
+    throw new Error((await response.text()) || 'Request failed (' + response.status + ')')
+  }
+  return (await response.json()) as T
+}
+
 export const mechanicalApi = {
-  async analyze(payload: MechanicalAnalysisInput): Promise<MechanicalAnalysis> {
-    const response = await fetch('/api/mechanical/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-    if (!response.ok) {
-      throw new Error((await response.text()) || 'Request failed (' + response.status + ')')
-    }
-    return (await response.json()) as MechanicalAnalysis
-  },
+  analyzeContacts: (payload: ContactsAnalysisInput) =>
+    post<ContactsAnalysis>('/api/mechanical/analyze-contacts', payload),
+  analyze: (payload: MechanicalAnalysisInput) =>
+    post<MechanicalAnalysis>('/api/mechanical/analyze', payload),
 }

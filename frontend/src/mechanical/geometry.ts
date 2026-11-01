@@ -44,3 +44,25 @@ export function makeTransform(
 export function isPositiveFinite(value: number | null | undefined): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0
 }
+
+type XY = [number, number]
+const cross = (o: XY, a: XY, b: XY) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+/** Counter-clockwise convex hull, used ONLY to draw the support polygon (the backend computes the margin). */
+export function convexHull(points: Point2D[]): Point2D[] {
+  const pts: XY[] = [...new Set(points.map((p) => `${p.x_m},${p.y_m}`))]
+    .map((k) => k.split(',').map(Number) as XY)
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+  if (pts.length <= 2) return pts.map(([x_m, y_m]) => ({ x_m, y_m }))
+  const build = (input: XY[]) => {
+    const out: XY[] = []
+    for (const p of input) {
+      while (out.length >= 2 && cross(out[out.length - 2], out[out.length - 1], p) <= 0) out.pop()
+      out.push(p)
+    }
+    return out
+  }
+  const lower = build(pts)
+  const upper = build([...pts].reverse())
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)].map(([x_m, y_m]) => ({ x_m, y_m }))
+}
