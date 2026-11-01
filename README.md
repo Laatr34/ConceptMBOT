@@ -26,6 +26,12 @@ Ambition : réduire les erreurs de conception, les dépenses inutiles et les mod
 
 Le robot visé par le projet est un **robot médiateur** (robot mobile évoluant parmi des visiteurs). Cela justifie notamment : robot différentiel, capteurs d'environnement (LiDAR 2D, ultrasons, caméra), zones interdites, simulation de déplacements de visiteurs, sécurité des personnes. Le détail du cahier des charges du robot (dimensions, composants réels, lieu d'usage) **n'est pas encore fourni** : ne pas l'inventer.
 
+### 3b. Matériel du robot (source de vérité)
+
+L'inventaire matériel du robot médiateur est dans **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 11/09/2026, 35 références). Transcription lisible : `docs/hardware/BOM.md` ; copie exploitable par le code : `backend/app/data/museum_robot_bom.json`. **Inutile de renvoyer le PDF.**
+
+⚠️ **Ce PDF est un inventaire : il ne contient AUCUNE caractéristique électrique ou mécanique** (tensions, courants, masses, couples…). Ces valeurs sont **inconnues** et ne doivent jamais être inventées : les calculs concernés renvoient « non évaluable » tant qu'une fiche technique réelle n'est pas saisie dans la bibliothèque. Point de conception à retenir : 2 moteurs DC 12 V avec encodeurs (différentiel) + **1 roue folle** (3 contacts au sol), DC-DC 12→5 V (Pi/électronique) et 12→6 V (servos MG996R).
+
 ### 4. Règles non négociables
 
 1. Exactitude des calculs avant esthétique.
@@ -34,7 +40,7 @@ Le robot visé par le projet est un **robot médiateur** (robot mobile évoluant
 4. Validation de toutes les entrées ; gestion des cas limites.
 5. **Traçabilité** : chaque résultat porte valeur, unité, formule, entrées, hypothèses, statut, limites (`CalcResult`).
 6. **Aucune valeur technique inventée.** Donnée inconnue = `None`, jamais `0` ni valeur par défaut. Le calcul renvoie alors « non évaluable » avec la liste des champs manquants.
-7. Ne jamais attribuer de caractéristiques à une référence commerciale sans source vérifiable. La bibliothèque de composants démarre **vide**.
+7. Ne jamais attribuer de caractéristiques à une référence commerciale sans source vérifiable. La bibliothèque de composants démarre **vide**. Le statut « vérifié » reste une déclaration du propriétaire : l'application exige une URL de fiche technique, mais n'en contrôle pas automatiquement le contenu.
 8. Ne jamais présenter une estimation comme une mesure réelle ; ne jamais prétendre qu'un calcul est certifié.
 9. Aucune fonctionnalité déclarée terminée sans tests exécutés.
 10. Ne jamais masquer un avertissement pour embellir l'interface.
@@ -75,10 +81,10 @@ Les moteurs (`engines/`) sont des **fonctions pures** : pas d'accès base de don
 | # | Étape | État |
 |---|---|---|
 | 0 | Fondations (monorepo, outillage, `CalcResult`, unités, i18n, CI) | **Fait (voir État d'avancement)** |
-| 1 | Modèles de données et gestion des projets | À faire |
-| 2 | Bibliothèque de composants | À faire |
+| 1 | Modèles de données et gestion des projets | **Fait** |
+| 2 | Bibliothèque de composants | **Fait** |
 | 3 | Moteur de calcul électrique | À faire |
-| 4 | Moteur batterie et autonomie | À faire |
+| 4 | Moteur batterie et autonomie | **Fait** |
 | 5 | Moteur motorisation | À faire |
 | 6 | Conception mécanique | À faire |
 | 7 | Centre de diagnostic | À faire |
@@ -92,7 +98,7 @@ Détail : `docs/PLAN.md`.
 
 ### 8. État d'avancement
 
-Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`).
+Voir la section *Status* en anglais ci-dessous, tenue à jour à chaque étape (source unique : `docs/PLAN.md`). Étape 1 terminée : gestion de projets, import/export JSON, autosauvegarde et historique des révisions. CI verte : 24 tests backend et 9 tests frontend réussis. Étape 2 terminée : bibliothèque de composants vide par défaut, fiches structurées, paramètres avec unités et champs manquants, statuts et import/export JSON. CI verte : 29 tests backend et 9 tests frontend. Étape 3 terminée : moteur électrique DC pur avec puissance, courant, courant de rail, pertes de régulateur, chute de tension et détection des dépassements de limites. CI verte : 47 tests backend et 9 tests frontend. Étape 4 terminée : calcul des packs série/parallèle, énergie nominale et utilisable, autonomie théorique/estimée/mesurée. Les effets Peukert, température et vieillissement restent des limites documentées faute de données batterie spécifiques. CI verte : 65 tests backend et 9 tests frontend.
 
 ### 9. Démarrage rapide
 
@@ -147,6 +153,12 @@ Ambition: reduce design errors, wasted spending and costly hardware changes.
 
 The target is a **mediator robot** (a mobile robot operating among visitors). This motivates: differential drive, environment sensing (2D LiDAR, ultrasonic, camera), forbidden zones, visitor-movement simulation, and people safety. The robot's detailed specification (dimensions, real components, place of use) has **not been provided yet** — do not invent it.
 
+### 3b. Robot hardware (source of truth)
+
+The mediator robot's hardware inventory is in **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 2026-09-11, 35 references). Readable transcription: `docs/hardware/BOM.md`; code-readable copy: `backend/app/data/museum_robot_bom.json`. **There is no need to send the PDF again.**
+
+⚠️ **The PDF is an inventory: it contains NO electrical or mechanical specifications** (voltages, currents, masses, torques…). These values are **unknown** and must never be invented: dependent calculations return "not evaluable" until a real datasheet is entered in the library. Design points to remember: 2 DC 12 V motors with encoders (differential drive) + **1 caster** (3 ground contacts), DC-DC 12→5 V (Pi/electronics) and 12→6 V (MG996R servos).
+
 ### 4. Non-negotiable rules
 
 1. Calculation correctness before aesthetics.
@@ -155,7 +167,7 @@ The target is a **mediator robot** (a mobile robot operating among visitors). Th
 4. Validate every input; handle edge cases.
 5. **Traceability**: every result carries value, unit, formula, inputs, assumptions, status, limits (`CalcResult`).
 6. **Never invent technical values.** Unknown data = `None`, never `0` or a default. The calculation then returns "not evaluable" with the list of missing fields.
-7. Never attach characteristics to a commercial part number without a verifiable source. The component library starts **empty**.
+7. Never attach characteristics to a commercial part number without a verifiable source. The component library starts **empty**. A "verified" status is an owner declaration: the app requires a datasheet URL but does not independently inspect its contents.
 8. Never present an estimate as a measurement; never claim a calculation is certified.
 9. No feature is "done" without executed tests.
 10. Never hide a warning to make the UI look nicer.
@@ -185,7 +197,18 @@ Single source of truth: `docs/PLAN.md`.
 - Frontend: Vite + React + TS + Tailwind, FR/EN i18n, the 13-entry side navigation (pages are placeholders **clearly labelled "not implemented yet"** — no fake features), Vitest passing.
 - CI: GitHub Actions (backend + frontend).
 
-**Next: Step 1** — data models and project management (versioned schema, CRUD, duplicate, import/export, history).
+**Step 1 — DONE** — versioned project management, SQLite persistence, CRUD, duplication, JSON import/export, autosave and revision history. GitHub Actions passed: 24 backend tests, 9 frontend tests, Ruff, mypy, frontend lint/typecheck/build.
+
+**Step 2 — DONE** — empty-by-default component library, structured datasheet parameters with units, missing-field tracking, status states and JSON import/export. GitHub Actions passed: 29 backend tests and 9 frontend tests.
+
+**Step 3 — DONE** — pure DC electrical engine: power/current, rail current aggregation, regulator input current and losses, resistive voltage drop, and checks against explicitly configured voltage/current limits. Missing values remain not evaluable. GitHub Actions passed: 47 backend tests and 9 frontend tests.
+
+**Step 4 — DONE** — series/parallel pack voltage and charge, nominal and usable energy in joules, and theoretical/estimated/measured autonomy. Peukert, temperature and aging effects remain documented limitations without battery-specific data. GitHub Actions passed: 65 backend tests and 9 frontend tests.
+
+**Step 5 — IN PROGRESS** — differential-drive motorization/traction engine exists and is unit-tested; no API or UI yet.
+
+**Step 6 — IN PROGRESS** — mass/CoG engine; two support models: a four-wheel rectangle and a support polygon for any contact layout (exact static loads for exactly 3 contacts such as 2 drive wheels + caster; loads not evaluable for 4+ contacts because they depend on stiffness). Endpoints: `POST /api/mechanical/analyze` and `/analyze-contacts` (router registered in `main.py`; it was missing before). Invalid physical inputs now return HTTP 422. Bilingual Mechanical Design page with a to-scale 2D top view. Not done: inputs are entered manually (not read from the project), no 3D view, margin is geometric only (ignores CoG height, slopes, braking).
+
 
 ### 8. Quick start
 

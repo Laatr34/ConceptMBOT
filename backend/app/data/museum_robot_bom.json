@@ -1,0 +1,331 @@
+{
+  "source": "docs/hardware/liste-materiel-robot-musee.pdf",
+  "document_version": "1.0",
+  "document_date": "2026-09-11",
+  "reference_count": 35,
+  "note": "Inventory only. The PDF contains NO electrical or mechanical specifications: every spec field is unknown (None) until the owner supplies a datasheet.",
+  "groups": [
+    {
+      "id": "compute",
+      "name_fr": "Unité de calcul & traitement",
+      "name_en": "Compute & processing"
+    },
+    {
+      "id": "locomotion",
+      "name_fr": "Locomotion & déplacement",
+      "name_en": "Locomotion"
+    },
+    {
+      "id": "perception",
+      "name_fr": "Perception & navigation",
+      "name_en": "Perception & navigation"
+    },
+    {
+      "id": "hri",
+      "name_fr": "Interaction humain-robot (IHR)",
+      "name_en": "Human-robot interaction"
+    },
+    {
+      "id": "actuators",
+      "name_fr": "Actionneurs & animation",
+      "name_en": "Actuators & animation"
+    },
+    {
+      "id": "power",
+      "name_fr": "Alimentation & sécurité électrique",
+      "name_en": "Power & electrical safety"
+    },
+    {
+      "id": "structure",
+      "name_fr": "Structure & fixation",
+      "name_en": "Structure & mounting"
+    },
+    {
+      "id": "wiring",
+      "name_fr": "Câblage & assemblage",
+      "name_en": "Wiring & assembly"
+    }
+  ],
+  "items": [
+    {
+      "ref": 1,
+      "category_group": "compute",
+      "name": "Raspberry Pi 5 – 8 Go",
+      "component_category": "sbc",
+      "quantity_text": "1",
+      "utility_fr": "Cerveau principal du robot (IA, navigation, gestion globale)"
+    },
+    {
+      "ref": 2,
+      "category_group": "compute",
+      "name": "ESP32",
+      "component_category": "microcontroller",
+      "quantity_text": "1",
+      "utility_fr": "Contrôle des moteurs et capteurs en temps réel"
+    },
+    {
+      "ref": 3,
+      "category_group": "compute",
+      "name": "microSD 128 Go",
+      "component_category": "storage",
+      "quantity_text": "1",
+      "utility_fr": "Système, logiciels et données du musée"
+    },
+    {
+      "ref": 4,
+      "category_group": "compute",
+      "name": "Dissipateur + ventilateur Pi 5",
+      "component_category": "cooling",
+      "quantity_text": "1",
+      "utility_fr": "Refroidissement du Raspberry Pi"
+    },
+    {
+      "ref": 5,
+      "category_group": "locomotion",
+      "name": "Moteurs DC 12 V avec encodeurs",
+      "component_category": "dc_motor",
+      "quantity_text": "2",
+      "utility_fr": "Déplacement du robot"
+    },
+    {
+      "ref": 6,
+      "category_group": "locomotion",
+      "name": "Roues motrices",
+      "component_category": "wheel",
+      "quantity_text": "2",
+      "utility_fr": "Déplacement"
+    },
+    {
+      "ref": 7,
+      "category_group": "locomotion",
+      "name": "Roue folle (caster)",
+      "component_category": "caster",
+      "quantity_text": "1",
+      "utility_fr": "Maintien de l'équilibre"
+    },
+    {
+      "ref": 8,
+      "category_group": "locomotion",
+      "name": "Driver moteur",
+      "component_category": "motor_driver",
+      "quantity_text": "1",
+      "utility_fr": "Contrôle des moteurs (pont en H)"
+    },
+    {
+      "ref": 9,
+      "category_group": "perception",
+      "name": "LiDAR 2D",
+      "component_category": "lidar",
+      "quantity_text": "1",
+      "utility_fr": "Cartographie et détection des obstacles"
+    },
+    {
+      "ref": 10,
+      "category_group": "perception",
+      "name": "IMU 6 axes",
+      "component_category": "imu",
+      "quantity_text": "1",
+      "utility_fr": "Mesure de l'orientation et des mouvements"
+    },
+    {
+      "ref": 11,
+      "category_group": "perception",
+      "name": "Capteurs ToF",
+      "component_category": "tof",
+      "quantity_text": "2-4",
+      "utility_fr": "Détection des obstacles proches"
+    },
+    {
+      "ref": 12,
+      "category_group": "perception",
+      "name": "Bumpers physiques",
+      "component_category": "bumper",
+      "quantity_text": "2-4",
+      "utility_fr": "Détection des collisions"
+    },
+    {
+      "ref": 13,
+      "category_group": "perception",
+      "name": "Caméra USB 1080p",
+      "component_category": "camera",
+      "quantity_text": "1",
+      "utility_fr": "Vision et interaction avec les visiteurs"
+    },
+    {
+      "ref": 14,
+      "category_group": "hri",
+      "name": "Écran tactile 7–10″",
+      "component_category": "display",
+      "quantity_text": "1",
+      "utility_fr": "Interface interactive avec les visiteurs"
+    },
+    {
+      "ref": 15,
+      "category_group": "hri",
+      "name": "Matrice LED HUB75 32×16 RGB",
+      "component_category": "led_matrix",
+      "quantity_text": "1",
+      "utility_fr": "Visage et animations du robot"
+    },
+    {
+      "ref": 16,
+      "category_group": "hri",
+      "name": "Microphone USB",
+      "component_category": "microphone",
+      "quantity_text": "1",
+      "utility_fr": "Capture des questions vocales"
+    },
+    {
+      "ref": 17,
+      "category_group": "hri",
+      "name": "Haut-parleur",
+      "component_category": "speaker",
+      "quantity_text": "1",
+      "utility_fr": "Réponse vocale du robot"
+    },
+    {
+      "ref": 18,
+      "category_group": "hri",
+      "name": "Amplificateur audio",
+      "component_category": "audio_amplifier",
+      "quantity_text": "1",
+      "utility_fr": "Amplification du son"
+    },
+    {
+      "ref": 19,
+      "category_group": "actuators",
+      "name": "Servomoteurs MG996R",
+      "component_category": "servo",
+      "quantity_text": "2",
+      "utility_fr": "Mouvement des bras"
+    },
+    {
+      "ref": 20,
+      "category_group": "actuators",
+      "name": "PCA9685",
+      "component_category": "servo_driver",
+      "quantity_text": "1",
+      "utility_fr": "Contrôle des servomoteurs (driver 16 canaux I2C)"
+    },
+    {
+      "ref": 21,
+      "category_group": "power",
+      "name": "Batterie 12 V",
+      "component_category": "battery",
+      "quantity_text": "1",
+      "utility_fr": "Alimentation principale"
+    },
+    {
+      "ref": 22,
+      "category_group": "power",
+      "name": "BMS",
+      "component_category": "bms",
+      "quantity_text": "1",
+      "utility_fr": "Protection de la batterie (surcharge/décharge)"
+    },
+    {
+      "ref": 23,
+      "category_group": "power",
+      "name": "Convertisseur DC-DC 12→5 V",
+      "component_category": "dcdc_converter",
+      "quantity_text": "1",
+      "utility_fr": "Alimentation du Pi et de l'électronique"
+    },
+    {
+      "ref": 24,
+      "category_group": "power",
+      "name": "Convertisseur DC-DC 12→6 V",
+      "component_category": "dcdc_converter",
+      "quantity_text": "1",
+      "utility_fr": "Alimentation des servomoteurs"
+    },
+    {
+      "ref": 25,
+      "category_group": "power",
+      "name": "Fusibles",
+      "component_category": "fuse",
+      "quantity_text": "several",
+      "utility_fr": "Protection électrique"
+    },
+    {
+      "ref": 26,
+      "category_group": "power",
+      "name": "Interrupteur général",
+      "component_category": "switch",
+      "quantity_text": "1",
+      "utility_fr": "Mise sous/hors tension"
+    },
+    {
+      "ref": 27,
+      "category_group": "power",
+      "name": "Arrêt d'urgence",
+      "component_category": "emergency_stop",
+      "quantity_text": "1",
+      "utility_fr": "Arrêt immédiat des moteurs"
+    },
+    {
+      "ref": 28,
+      "category_group": "structure",
+      "name": "Châssis",
+      "component_category": "chassis",
+      "quantity_text": "1",
+      "utility_fr": "Structure du robot"
+    },
+    {
+      "ref": 29,
+      "category_group": "structure",
+      "name": "Support caméra",
+      "component_category": "mount",
+      "quantity_text": "1",
+      "utility_fr": "Fixation de la caméra"
+    },
+    {
+      "ref": 30,
+      "category_group": "structure",
+      "name": "Support LiDAR",
+      "component_category": "mount",
+      "quantity_text": "1",
+      "utility_fr": "Fixation du LiDAR"
+    },
+    {
+      "ref": 31,
+      "category_group": "structure",
+      "name": "Supports écran/LED",
+      "component_category": "mount",
+      "quantity_text": "1 lot",
+      "utility_fr": "Fixation des interfaces"
+    },
+    {
+      "ref": 32,
+      "category_group": "wiring",
+      "name": "Câbles électriques",
+      "component_category": "cable",
+      "quantity_text": "several",
+      "utility_fr": "Connexions"
+    },
+    {
+      "ref": 33,
+      "category_group": "wiring",
+      "name": "Connecteurs/borniers",
+      "component_category": "connector",
+      "quantity_text": "several",
+      "utility_fr": "Connexions fiables"
+    },
+    {
+      "ref": 34,
+      "category_group": "wiring",
+      "name": "Vis, écrous, entretoises",
+      "component_category": "hardware",
+      "quantity_text": "1 lot",
+      "utility_fr": "Assemblage"
+    },
+    {
+      "ref": 35,
+      "category_group": "wiring",
+      "name": "Gaine/serre-câbles",
+      "component_category": "hardware",
+      "quantity_text": "1 lot",
+      "utility_fr": "Organisation et protection du câblage"
+    }
+  ]
+}

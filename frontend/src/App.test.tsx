@@ -18,20 +18,38 @@ describe('App shell', () => {
     await i18n.changeLanguage('en')
   })
 
-  it('renders the 13 navigation links', () => {
+  it('renders the 14 navigation links', () => {
     renderAt('/')
-    expect(screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')).toHaveLength(13)
+    expect(screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')).toHaveLength(14)
+  })
+
+  it('opens the in-app documentation page', () => {
+    renderAt('/documentation')
+    expect(screen.getByRole('heading', { name: 'RobotLab Web documentation' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '1. What is RobotLab Web?' })).toBeInTheDocument()
+  })
+
+  it('opens the electrical analysis module', () => {
+    renderAt('/electrical')
+    expect(screen.getByRole('heading', { name: 'Electrical Design' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Analyze electrical design' })).toBeInTheDocument()
+  })
+
+  it('opens the battery and autonomy module', () => {
+    renderAt('/power')
+    expect(screen.getByRole('heading', { name: 'Battery & Autonomy' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Analyze battery' })).toBeInTheDocument()
   })
 
   it('labels unimplemented modules explicitly (no fake features)', () => {
-    renderAt('/electrical')
+    renderAt('/sensors')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
   })
 
-  it('switches language to French', async () => {
+  it('switches the component library to French', async () => {
     renderAt('/library')
     await userEvent.selectOptions(screen.getByLabelText('Language'), 'fr')
     expect(await screen.findByRole('heading', { name: 'Bibliothèque de composants' })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('Pas encore implémenté')
+    expect(screen.getByRole('button', { name: 'Ajouter le composant' })).toBeInTheDocument()
   })
 })
