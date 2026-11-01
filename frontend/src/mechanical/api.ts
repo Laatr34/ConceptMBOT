@@ -64,6 +64,18 @@ export interface ContactsAnalysis {
   stability: { margin_m: CalcResult; status: StabilityStatus }
 }
 
+export interface ProjectMassSource {
+  name: string
+  source: 'project_override' | 'verified_component_parameter' | 'unknown'
+  component_id: string | null
+  source_page: string | null
+  detail: string | null
+}
+
+export interface ProjectContactsAnalysis extends ContactsAnalysis {
+  mass_sources: ProjectMassSource[]
+}
+
 async function post<T>(path: string, payload: unknown): Promise<T> {
   const response = await fetch(path, {
     method: 'POST',
@@ -79,6 +91,8 @@ async function post<T>(path: string, payload: unknown): Promise<T> {
 export const mechanicalApi = {
   analyzeContacts: (payload: ContactsAnalysisInput) =>
     post<ContactsAnalysis>('/api/mechanical/analyze-contacts', payload),
+  analyzeProjectContacts: (projectId: string) =>
+    post<ProjectContactsAnalysis>(`/api/mechanical/projects/${projectId}/analyze-contacts`, {}),
   analyze: (payload: MechanicalAnalysisInput) =>
     post<MechanicalAnalysis>('/api/mechanical/analyze', payload),
 }
