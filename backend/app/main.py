@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.components import router as components_router
 from app.api.mechanical import router as mechanical_router
+from app.api.motorization import router as motorization_router
 from app.api.projects import router as projects_router
 from app.domain.units import InvalidInputError
 from app.infrastructure import component_models, project_models  # noqa: F401
@@ -31,6 +32,7 @@ app = FastAPI(
 app.include_router(projects_router)
 app.include_router(components_router)
 app.include_router(mechanical_router)
+app.include_router(motorization_router)
 
 
 @app.exception_handler(InvalidInputError)
