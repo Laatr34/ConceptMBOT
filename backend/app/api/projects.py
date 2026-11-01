@@ -15,6 +15,7 @@ from app.domain.projects import (
     ProjectCreate,
     ProjectDocument,
     ProjectHistoryEntry,
+    ProjectMechanicalData,
     ProjectSummary,
     ProjectUpdate,
 )
@@ -102,6 +103,37 @@ def get_project_history(
         return project_service.project_history(session, project_id)
     except ProjectNotFoundError as error:
         raise _not_found(error) from error
+
+
+@router.get("/{project_id}/mechanical", response_model=ProjectMechanicalData)
+def get_project_mechanical_layout(
+    project_id: UUID, session: Session = Depends(get_session)
+) -> ProjectMechanicalData:
+    try:
+        project = project_service.get_project(session, project_id)
+    except ProjectNotFoundError as error:
+        raise _not_found(error) from error
+    return ProjectMechanicalData.model_validate(project.data["mechanical"])
+
+
+@router.put("/{project_id}/mechanical", response_model=ProjectMechanicalData)
+def update_project_mechanical_layout(
+    project_id: UUID,
+    payload: ProjectMechanicalData,
+    session: Session = Depends(get_session),
+) -> ProjectMechanicalData:
+    try:
+        project = project_service.get_project(session, project_id)
+        data = {**project.data, "mechanical": payload.model_dump(mode="json")}
+        updated = project_service.update_project(
+            session,
+            project_id,
+            ProjectUpdate(data=data),
+            action="mechanical_layout_updated",
+        )
+    except ProjectNotFoundError as error:
+        raise _not_found(error) from error
+    return ProjectMechanicalData.model_validate(updated.data["mechanical"])
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
