@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.battery import router as battery_router
 from app.api.components import router as components_router
+from app.api.diagnostics import router as diagnostics_router
 from app.api.electrical import router as electrical_router
 from app.api.mechanical import router as mechanical_router
 from app.api.motorization import router as motorization_router
@@ -35,6 +36,7 @@ app.include_router(projects_router)
 app.include_router(components_router)
 app.include_router(battery_router)
 app.include_router(electrical_router)
+app.include_router(diagnostics_router)
 app.include_router(mechanical_router)
 app.include_router(motorization_router)
 
