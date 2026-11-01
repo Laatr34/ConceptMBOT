@@ -76,6 +76,8 @@ class CableRun(BaseModel):
     model_config = ConfigDict(extra="forbid")
     id: str = Field(min_length=1)
     rail_id: str
+    # Load carried by the run; None = the whole rail current (feeder cable).
+    load_instance_id: str | None = None
     length_m: float = Field(gt=0)  # one-way length
     section_mm2: float | None = Field(default=None, gt=0)
 
@@ -249,6 +251,8 @@ class ProjectData(BaseModel):
         for c in e.cables:
             if c.rail_id not in rail_ids:
                 raise ValueError(f"cable {c.id}: unknown rail {c.rail_id}")
+            if c.load_instance_id is not None and c.load_instance_id not in known:
+                raise ValueError(f"cable {c.id}: unknown instance {c.load_instance_id}")
         for ref in (
             self.battery.instance_id,
             self.motorization.motor_instance_id,
