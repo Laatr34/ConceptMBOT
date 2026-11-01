@@ -129,7 +129,6 @@ def test_contacts_analysis_rejects_collinear_and_too_few_contacts() -> None:
     assert few.status_code == 422
 
 
-
 def test_project_analysis_resolves_only_owner_verified_kg_mass() -> None:
     with TestClient(app) as client:
         component = client.post(
@@ -139,9 +138,7 @@ def test_project_analysis_resolves_only_owner_verified_kg_mass() -> None:
                 "category": "controller",
                 "status": "verified",
                 "datasheet_url": "https://example.invalid/datasheet.pdf",
-                "parameters": [
-                    {"name": "mass", "value": 0.25, "unit": "kg", "source_page": "2"}
-                ],
+                "parameters": [{"name": "mass", "value": 0.25, "unit": "kg", "source_page": "2"}],
             },
         )
         assert component.status_code == 201
@@ -189,9 +186,7 @@ def test_project_analysis_does_not_use_custom_component_mass() -> None:
                 "name": "Custom board",
                 "category": "controller",
                 "status": "custom",
-                "parameters": [
-                    {"name": "mass", "value": 0.25, "unit": "kg", "source_page": None}
-                ],
+                "parameters": [{"name": "mass", "value": 0.25, "unit": "kg", "source_page": None}],
             },
         )
         component_id = component.json()["id"]
@@ -233,9 +228,7 @@ def test_project_analysis_reports_missing_contact_coordinates() -> None:
             ],
         }
         client.put(f"/api/projects/{project_id}/mechanical", json=layout)
-        response = client.post(
-            f"/api/mechanical/projects/{project_id}/analyze-contacts"
-        )
+        response = client.post(f"/api/mechanical/projects/{project_id}/analyze-contacts")
 
     assert response.status_code == 422
     assert response.json()["detail"]["missing_inputs"] == ["left.x_m"]
