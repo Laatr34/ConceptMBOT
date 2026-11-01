@@ -13,7 +13,7 @@ Status legend: `TODO`, `IN PROGRESS`, `DONE` (DONE = tests executed and passing)
 | 3 | Electrical engine (rails, P=UI, regulators, efficiency, voltage drop, anomaly detection) | IN PROGRESS | Engine only; HTTP API and frontend page are still missing |
 | 4 | Battery engine (series/parallel, Wh, usable energy, autonomy theoretical/estimated/measured) | IN PROGRESS | Engine only; HTTP API and frontend page are still missing |
 | 5 | Motorization engine (differential drive, torque, traction, slope, current) | IN PROGRESS | Engine done (`engines/motorization.py`, unit-tested). Still missing: HTTP API, frontend page, link to project data. Never use stall current as running current |
-| 6 | Mechanical design (mass, CoG, wheel load, static stability, 2D then 3D view) | IN PROGRESS | Engine, API and 2D page exist. Project schema v2 now defines persistent mass-point and contact layout; next: resolve linked component masses and load/save layout from selected project |
+| 6 | Mechanical design (mass, CoG, wheel load, static stability, 2D then 3D view) | IN PROGRESS | Engine, API and 2D page exist. Project schema v2 migration, project layout GET/PUT, selected-project load/save, optional component-library links, owner-verified kg mass resolution and visible mass provenance are implemented. Still in progress: automated component placement, broader project workflow coverage and mechanical-model validation |
 | 7 | Diagnostics center (severities, full warning structure) | TODO | |
 | 8 | Visual circuit editor (graph of nodes/pins/nets) | TODO | |
 | 9 | Sensors and interface compatibility (logic levels, GPIO limits) | TODO | |
