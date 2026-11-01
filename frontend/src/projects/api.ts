@@ -1,5 +1,5 @@
 export interface ProjectDocument {
-  schema_version: 1
+  schema_version: number
   id: string
   name: string
   description: string | null
