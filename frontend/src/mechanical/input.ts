@@ -3,6 +3,7 @@ import type { ContactsAnalysisInput, MassPointInput, MechanicalAnalysisInput } f
 export interface Row {
   id: number
   name: string
+  component_id?: string | null
   mass: string
   x: string
   y: string
