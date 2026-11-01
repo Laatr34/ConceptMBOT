@@ -251,8 +251,8 @@ describe('MechanicalPage', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Analyze' }))
       await screen.findByTestId('support-polygon')
 
-      expect(fetchMock.mock.calls[0][0]).toBe(`/api/projects/${projectId}/mechanical`)
-      expect(fetchMock.mock.calls[1][0]).toBe('/api/components')
+      expect(fetchMock.mock.calls[0][0]).toBe('/api/components')
+      expect(fetchMock.mock.calls[1][0]).toBe(`/api/projects/${projectId}/mechanical`)
       expect(fetchMock.mock.calls[2][0]).toBe(`/api/projects/${projectId}/mechanical`)
       expect(fetchMock.mock.calls[2][1].method).toBe('PUT')
       const saved = JSON.parse(fetchMock.mock.calls[2][1].body)
