@@ -5,6 +5,7 @@ import ProjectsPage from './pages/ProjectsPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import LibraryPage from './pages/LibraryPage'
 import MechanicalPage from './pages/MechanicalPage'
+import MotorizationPage from './pages/MotorizationPage'
 import DocumentationPage from './pages/DocumentationPage'
 import { NAV_ITEMS } from './navigation'
 export default function App() {
