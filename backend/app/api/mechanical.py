@@ -5,14 +5,19 @@ from __future__ import annotations
 from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.domain.calc_result import CalcResult, ResultStatus
 from app.engines.mechanical import (
     CenterOfGravityResult,
+    ContactPoint,
     FourWheelLoads,
     MassPoint,
     StaticStabilityResult,
+    SupportPolygonStabilityResult,
     calculate_center_of_gravity,
     calculate_four_wheel_loads,
     calculate_static_stability,
+    calculate_support_polygon_stability,
+    calculate_three_contact_loads,
 )
 
 
@@ -38,6 +43,27 @@ class MechanicalAnalysisResponse(BaseModel):
     center_of_gravity: CenterOfGravityResult
     wheel_loads: FourWheelLoads
     stability: StaticStabilityResult
+
+
+class ContactInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=120)
+    x_m: float
+    y_m: float
+
+
+class ContactsAnalysisInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mass_points: list[MassPointInput] = Field(default_factory=list)
+    contacts: list[ContactInput] = Field(min_length=3, max_length=16)
+
+
+class ContactsAnalysisResponse(BaseModel):
+    center_of_gravity: CenterOfGravityResult
+    contact_loads: list[CalcResult]
+    stability: SupportPolygonStabilityResult
 
 
 router = APIRouter(prefix="/api/mechanical", tags=["mechanical"])
@@ -76,3 +102,47 @@ def analyze_mechanical_design(
         wheel_loads=wheel_loads,
         stability=stability,
     )
+
+
+def _to_mass_points(inputs: list[MassPointInput]) -> list[MassPoint]:
+    return [MassPoint(p.name, p.mass_kg, p.x_m, p.y_m, p.z_m) for p in inputs]
+
+
+@router.post("/analyze-contacts", response_model=ContactsAnalysisResponse)
+def analyze_mechanical_contacts(payload: ContactsAnalysisInput) -> ContactsAnalysisResponse:
+    """Support-polygon model for any contact layout (e.g. 2 drive wheels + 1 caster).
+
+    Contact loads are exact for three contacts. With more contacts the reactions
+    depend on stiffness and are reported as not evaluable; the margin is still given.
+    """
+
+    contacts = [ContactPoint(c.name, c.x_m, c.y_m) for c in payload.contacts]
+    cog = calculate_center_of_gravity(_to_mass_points(payload.mass_points))
+    stability = calculate_support_polygon_stability(
+        cg_x_m=cog.x_m.value, cg_y_m=cog.y_m.value, contacts=contacts
+    )
+    if len(contacts) == 3:
+        loads = calculate_three_contact_loads(
+            mass_kg=cog.total_mass.value,
+            cg_x_m=cog.x_m.value,
+            cg_y_m=cog.y_m.value,
+            contacts=contacts,
+        ).loads
+    else:
+        loads = [
+            CalcResult(
+                name=f"mechanical.contact_load.{c.name}",
+                value=None,
+                unit="N",
+                formula="statically indeterminate for more than 3 contacts",
+                status=ResultStatus.NOT_EVALUABLE,
+                limits=[
+                    (
+                        "Reactions are statically indeterminate with more than 3 contacts: "
+                        "they depend on stiffness and suspension, which are not modelled."
+                    )
+                ],
+            )
+            for c in contacts
+        ]
+    return ContactsAnalysisResponse(center_of_gravity=cog, contact_loads=loads, stability=stability)
