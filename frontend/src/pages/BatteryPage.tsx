@@ -106,7 +106,7 @@ export default function BatteryPage() {
     <section className="mx-auto max-w-5xl space-y-5" aria-labelledby="battery-title">
       <div>
         <h1 id="battery-title" className="text-2xl font-semibold text-slate-900">
-          {t('nav.power')}
+          {t('battery.title')}
         </h1>
         <p className="mt-1 text-sm text-slate-600">{t('battery.intro')}</p>
       </div>
