@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api.components import router as components_router
+from app.api.mechanical import router as mechanical_router
 from app.api.projects import router as projects_router
 from app.infrastructure import component_models, project_models  # noqa: F401
 from app.infrastructure.database import Base, engine
@@ -27,6 +28,7 @@ app = FastAPI(
 )
 app.include_router(projects_router)
 app.include_router(components_router)
+app.include_router(mechanical_router)
 
 
 @app.get("/health", tags=["system"])
