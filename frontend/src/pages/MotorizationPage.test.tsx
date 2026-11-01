@@ -104,7 +104,8 @@ describe('MotorizationPage', () => {
       await userEvent.type(screen.getByLabelText(label), value)
     }
     await userEvent.click(screen.getByRole('button', { name: 'Analyze motorization' }))
-    expect(await screen.findByText('10 rad/s')).toBeInTheDocument()
+    await screen.findAllByText('10 rad/s')
+    expect(screen.getAllByText('10 rad/s')).toHaveLength(2)
     expect(screen.getByText('1.6 N·m')).toBeInTheDocument()
     expect(fetchMock.mock.calls[0][0]).toBe('/api/motorization/analyze')
     const payload = JSON.parse(fetchMock.mock.calls[0][1].body)
