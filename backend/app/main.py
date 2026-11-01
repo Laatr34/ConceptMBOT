@@ -9,6 +9,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.api.components import router as components_router
+from app.api.electrical import router as electrical_router
 from app.api.mechanical import router as mechanical_router
 from app.api.motorization import router as motorization_router
 from app.api.projects import router as projects_router
@@ -31,6 +32,7 @@ app = FastAPI(
 )
 app.include_router(projects_router)
 app.include_router(components_router)
+app.include_router(electrical_router)
 app.include_router(mechanical_router)
 app.include_router(motorization_router)
 
