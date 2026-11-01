@@ -1,5 +1,3 @@
-import type { ProjectSummary } from '../projects/api'
-
 export type DiagnosticSeverity = 'critical' | 'high' | 'medium' | 'info'
 export type DiagnosticsStatus = 'clear' | 'incomplete' | 'attention'
 
@@ -40,4 +38,3 @@ export const diagnosticsApi = {
     post<DiagnosticsReport>(`/api/diagnostics/projects/${projectId}/analyze`),
 }
 
-export type { ProjectSummary }
