@@ -34,7 +34,7 @@ describe('i18n', () => {
     }
   })
 
-  it('has the 13 required navigation entries', () => {
-    expect(NAV_ITEMS).toHaveLength(13)
+  it('has the 14 navigation entries', () => {
+    expect(NAV_ITEMS).toHaveLength(14)
   })
 })
