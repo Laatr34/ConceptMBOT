@@ -64,9 +64,10 @@ describe('DiagnosticsPage', () => {
 
     expect(await screen.findByText('The projected centre of gravity is outside the support polygon.')).toBeInTheDocument()
     expect(screen.getByText('Critical')).toBeInTheDocument()
-    expect(screen.getByText('Robot support polygon')).toBeInTheDocument()
-    expect(screen.getByText('Convex hull computed from project ground-contact coordinates.')).toBeInTheDocument()
-    expect(screen.getByText('Review the measured mass-point positions and support geometry.')).toBeInTheDocument()
+    expect(screen.getByText(/Robot support polygon/)).toBeInTheDocument()
+    expect(screen.getByText(/Convex hull computed from project ground-contact coordinates/)).toBeInTheDocument()
+    expect(screen.getByText(/Review the measured mass-point positions and support geometry/)).toBeInTheDocument()
+    expect(screen.getByText(/-0.05 m/)).toBeInTheDocument()
     expect(fetchMock.mock.calls[1][0]).toBe('/api/diagnostics/projects/00000000-0000-0000-0000-000000000123/analyze')
   })
 
