@@ -8,11 +8,13 @@ import {
   type ContactsAnalysis,
   type MechanicalAnalysis,
   type MechanicalAnalysisInput,
+  type ProjectMassSource,
   type StabilityStatus,
 } from '../mechanical/api'
 import { convexHull } from '../mechanical/geometry'
 import { buildContactsInput, buildInput, type ContactRow, type Row } from '../mechanical/input'
 import { projectsApi, type ProjectMechanicalData } from '../projects/api'
+import { componentsApi, type ComponentSummary } from '../components/api'
 
 let nextId = 1
 const emptyRow = (): Row => ({ id: nextId++, name: '', component_id: null, mass: '', x: '', y: '', z: '' })
@@ -41,10 +43,13 @@ export default function MechanicalPage() {
   const [projectLoading, setProjectLoading] = useState(Boolean(projectId))
   const [projectSaved, setProjectSaved] = useState(false)
   const [savedLayout, setSavedLayout] = useState<ProjectMechanicalData | null>(null)
+  const [componentOptions, setComponentOptions] = useState<ComponentSummary[]>([])
+  const [massSources, setMassSources] = useState<ProjectMassSource[]>([])
 
   useEffect(() => {
     if (!projectId) return
     let active = true
+    void componentsApi.list().then(setComponentOptions).catch(() => setComponentOptions([]))
     void projectsApi.getMechanical(projectId).then(
       (layout) => {
         if (!active) return
@@ -104,6 +109,7 @@ export default function MechanicalPage() {
         }
         setAnalysis(await mechanicalApi.analyze(built.input))
         setContactsAnalysis(null)
+        setMassSources([])
         setAnalysedInput(built.input)
         setPolygon(null)
         setDrawn(
@@ -128,7 +134,11 @@ export default function MechanicalPage() {
           setSavedLayout(await projectsApi.saveMechanical(projectId, layout))
           setProjectSaved(true)
         }
-        setContactsAnalysis(await mechanicalApi.analyzeContacts(built.input))
+        const result = projectId
+          ? await mechanicalApi.analyzeProjectContacts(projectId)
+          : await mechanicalApi.analyzeContacts(built.input)
+        setContactsAnalysis(result)
+        setMassSources('mass_sources' in result ? result.mass_sources : [])
         setAnalysis(null)
         setPolygon(convexHull(built.input.contacts.map((c) => ({ x_m: c.x_m, y_m: c.y_m }))))
         setDrawn(
@@ -224,8 +234,25 @@ export default function MechanicalPage() {
         </div>
         {rows.map((r, i) => (
           <div key={r.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center gap-2">
-            <input aria-label={`${t('mechanical.name')} ${i + 1}`} className={field} value={r.name}
-              onChange={(e) => update(r.id, { name: e.target.value })} />
+            <div className="space-y-1">
+              <input aria-label={`${t('mechanical.name')} ${i + 1}`} className={field} value={r.name}
+                onChange={(e) => update(r.id, { name: e.target.value })} />
+              {projectId && (
+                <select
+                  aria-label={`${t('mechanical.component')} ${i + 1}`}
+                  className={field}
+                  value={r.component_id ?? ''}
+                  onChange={(e) => update(r.id, { component_id: e.target.value || null })}
+                >
+                  <option value="">{t('mechanical.noLinkedComponent')}</option>
+                  {componentOptions.map((component) => (
+                    <option key={component.id} value={component.id}>
+                      {component.name} · {t(`componentStatus.${component.status}`)}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
             <input aria-label={`${t('mechanical.mass')} ${i + 1}`} inputMode="decimal" className={field} value={r.mass}
               onChange={(e) => update(r.id, { mass: e.target.value })} />
             <input aria-label={`${t('mechanical.x')} ${i + 1}`} inputMode="decimal" className={field} value={r.x}
@@ -291,6 +318,21 @@ export default function MechanicalPage() {
         <p role="alert" className="text-sm text-red-700">
           {error}
         </p>
+      )}
+
+      {massSources.length > 0 && (
+        <section aria-label={t('mechanical.massSources')} className="rounded border bg-white p-3 text-sm">
+          <h2 className="font-medium">{t('mechanical.massSources')}</h2>
+          <ul className="mt-2 space-y-1">
+            {massSources.map((source, index) => (
+              <li key={`${source.name}-${index}`}>
+                <strong>{source.name}</strong>: {t(`mechanical.massSource.${source.source}`)}
+                {source.detail ? ` — ${source.detail}` : ''}
+                {source.source_page ? ` (${t('mechanical.sourcePage')}: ${source.source_page})` : ''}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {status && (
