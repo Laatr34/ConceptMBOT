@@ -107,3 +107,48 @@ def test_import_migrates_v1_project(client: TestClient) -> None:
 def test_import_rejects_unknown_schema_version(client: TestClient) -> None:
     response = client.post("/api/projects/import", json={"schema_version": 99})
     assert response.status_code == 422
+
+
+def test_project_mechanical_layout_is_persisted(client: TestClient) -> None:
+    created = client.post("/api/projects", json={"name": "Museum robot"}).json()
+    project_id = created["id"]
+
+    initial = client.get(f"/api/projects/{project_id}/mechanical")
+    assert initial.status_code == 200
+    assert initial.json() == {"mass_points": [], "contacts": []}
+
+    layout = {
+        "mass_points": [
+            {
+                "name": "Raspberry Pi",
+                "component_id": None,
+                "mass_kg": None,
+                "x_m": None,
+                "y_m": None,
+                "z_m": None,
+            }
+        ],
+        "contacts": [
+            {"name": "left_wheel", "x_m": None, "y_m": None},
+            {"name": "right_wheel", "x_m": None, "y_m": None},
+            {"name": "caster", "x_m": None, "y_m": None},
+        ],
+    }
+    saved = client.put(f"/api/projects/{project_id}/mechanical", json=layout)
+    assert saved.status_code == 200
+    assert saved.json() == layout
+
+    restored = client.get(f"/api/projects/{project_id}/mechanical")
+    assert restored.status_code == 200
+    assert restored.json() == layout
+    history = client.get(f"/api/projects/{project_id}/history").json()
+    assert history[0]["action"] == "mechanical_layout_updated"
+
+
+def test_project_mechanical_layout_rejects_unknown_fields(client: TestClient) -> None:
+    created = client.post("/api/projects", json={"name": "Museum robot"}).json()
+    response = client.put(
+        f"/api/projects/{created['id']}/mechanical",
+        json={"mass_points": [], "contacts": [], "invented_dimensions": True},
+    )
+    assert response.status_code == 422
