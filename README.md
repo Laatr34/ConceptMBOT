@@ -193,6 +193,11 @@ Single source of truth: `docs/PLAN.md`.
 
 **Step 4 — DONE** — series/parallel pack voltage and charge, nominal and usable energy in joules, and theoretical/estimated/measured autonomy. Peukert, temperature and aging effects remain documented limitations without battery-specific data. GitHub Actions passed: 65 backend tests and 9 frontend tests.
 
+**Step 5 — IN PROGRESS** — differential-drive motorization/traction engine exists and is unit-tested; no API or UI yet.
+
+**Step 6 — IN PROGRESS** — mass/CoG/four-corner-load/static-stability engine, `POST /api/mechanical/analyze` (router registered in `main.py`; it was missing before), and a bilingual Mechanical Design page with a to-scale 2D top view. Limitation: the model assumes four coplanar wheel contacts in a rectangle; the museum robot (2 drive wheels + 1 caster) needs a 3-contact support-polygon model, not implemented yet. Inputs are entered manually, not yet read from the project.
+
+
 ### 8. Quick start
 
 See section 9 of the French part (commands are identical).
