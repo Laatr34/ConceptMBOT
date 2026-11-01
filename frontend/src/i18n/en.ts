@@ -145,10 +145,10 @@ const en = {
       items: {
         projects: { title: 'Project management', body: 'Create, list, open, duplicate and delete projects; JSON import/export, autosave, revision history and versioned project data.' },
         library: { title: 'Component library', body: 'Structured component records, manufacturer/model fields, datasheet URL, parameter values with units, missing fields and owner-declared data status.' },
-        mechanical: { title: 'Mechanical design', body: 'Mass points, centre of gravity, wheel/support loads, static support analysis and a 2D top view. Project-linked layout and component mass provenance are being completed and validated.' },
-        electrical: { title: 'Electrical design', body: 'Electrical calculation engine is under development. The complete API workflow and user page are not yet available.' },
+        mechanical: { title: 'Mechanical design', body: 'The 2D analysis page loads and saves project mass points and ground contacts. Optional library links resolve mass only from an unambiguous owner-verified kg parameter; placement automation, 3D view and further model validation remain.' },
+        electrical: { title: 'Electrical design', body: 'The pure DC calculation engine, POST analysis API and React page cover power/current, voltage drop, regulator losses, rail loads and explicit-limit anomaly checks.' },
         battery: { title: 'Battery and autonomy', body: 'Battery pack and autonomy engine work is in progress; the complete user workflow and validation remain to be finished.' },
-        motorization: { title: 'Motorization', body: 'A differential-drive calculation engine exists, but the API, project integration and frontend page remain to be implemented.' },
+        motorization: { title: 'Motorization', body: 'The differential-drive engine, POST analysis API and React page cover wheel kinematics, slope force, torque, traction and torque-producing current. Project-linked motor parameter selection remains a future integration.' },
         diagnostics: { title: 'Diagnostics', body: 'Centralized severity levels and structured warnings are planned.' },
         circuit: { title: 'Visual circuit editor', body: 'A graph model for components, pins and electrical nets is planned before the visual editor.' },
         sensors: { title: 'Sensors and interfaces', body: 'Logic-level compatibility, GPIO limits and interface checks are planned.' },
