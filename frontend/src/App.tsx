@@ -6,6 +6,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage'
 import LibraryPage from './pages/LibraryPage'
 import MechanicalPage from './pages/MechanicalPage'
 import MotorizationPage from './pages/MotorizationPage'
+import MotorizationPage from './pages/MotorizationPage'
 import DocumentationPage from './pages/DocumentationPage'
 import { NAV_ITEMS } from './navigation'
 export default function App() {
@@ -16,8 +17,9 @@ export default function App() {
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="/library" element={<LibraryPage />} />
         <Route path="/mechanical" element={<MechanicalPage />} />
+        <Route path="/motorization" element={<MotorizationPage />} />
         <Route path="/documentation" element={<DocumentationPage />} />
-        {NAV_ITEMS.filter((item) => item.path !== '/projects' && item.path !== '/library' && item.path !== '/mechanical' && item.path !== '/documentation').map((item) => (
+        {NAV_ITEMS.filter((item) => item.path !== '/projects' && item.path !== '/library' && item.path !== '/mechanical' && item.path !== '/motorization' && item.path !== '/documentation').map((item) => (
           <Route key={item.path} path={item.path}
             element={<PlaceholderPage labelKey={item.labelKey} step={item.step} />} />
         ))}
