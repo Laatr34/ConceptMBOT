@@ -26,6 +26,12 @@ Ambition : réduire les erreurs de conception, les dépenses inutiles et les mod
 
 Le robot visé par le projet est un **robot médiateur** (robot mobile évoluant parmi des visiteurs). Cela justifie notamment : robot différentiel, capteurs d'environnement (LiDAR 2D, ultrasons, caméra), zones interdites, simulation de déplacements de visiteurs, sécurité des personnes. Le détail du cahier des charges du robot (dimensions, composants réels, lieu d'usage) **n'est pas encore fourni** : ne pas l'inventer.
 
+### 3b. Matériel du robot (source de vérité)
+
+L'inventaire matériel du robot médiateur est dans **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 11/09/2026, 35 références). Transcription lisible : `docs/hardware/BOM.md` ; copie exploitable par le code : `backend/app/data/museum_robot_bom.json`. **Inutile de renvoyer le PDF.**
+
+⚠️ **Ce PDF est un inventaire : il ne contient AUCUNE caractéristique électrique ou mécanique** (tensions, courants, masses, couples…). Ces valeurs sont **inconnues** et ne doivent jamais être inventées : les calculs concernés renvoient « non évaluable » tant qu'une fiche technique réelle n'est pas saisie dans la bibliothèque. Point de conception à retenir : 2 moteurs DC 12 V avec encodeurs (différentiel) + **1 roue folle** (3 contacts au sol), DC-DC 12→5 V (Pi/électronique) et 12→6 V (servos MG996R).
+
 ### 4. Règles non négociables
 
 1. Exactitude des calculs avant esthétique.
@@ -146,6 +152,12 @@ Ambition: reduce design errors, wasted spending and costly hardware changes.
 ### 3. Target robot
 
 The target is a **mediator robot** (a mobile robot operating among visitors). This motivates: differential drive, environment sensing (2D LiDAR, ultrasonic, camera), forbidden zones, visitor-movement simulation, and people safety. The robot's detailed specification (dimensions, real components, place of use) has **not been provided yet** — do not invent it.
+
+### 3b. Robot hardware (source of truth)
+
+The mediator robot's hardware inventory is in **`docs/hardware/liste-materiel-robot-musee.pdf`** (v1.0, 2026-09-11, 35 references). Readable transcription: `docs/hardware/BOM.md`; code-readable copy: `backend/app/data/museum_robot_bom.json`. **There is no need to send the PDF again.**
+
+⚠️ **The PDF is an inventory: it contains NO electrical or mechanical specifications** (voltages, currents, masses, torques…). These values are **unknown** and must never be invented: dependent calculations return "not evaluable" until a real datasheet is entered in the library. Design points to remember: 2 DC 12 V motors with encoders (differential drive) + **1 caster** (3 ground contacts), DC-DC 12→5 V (Pi/electronics) and 12→6 V (MG996R servos).
 
 ### 4. Non-negotiable rules
 
