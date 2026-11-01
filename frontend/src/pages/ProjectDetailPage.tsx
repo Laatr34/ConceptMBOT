@@ -72,6 +72,12 @@ export default function ProjectDetailPage() {
         <>
           <h1 id="project-title" className="mt-4 text-2xl font-semibold">{project.name}</h1>
           {project.description && <p className="mt-1 text-slate-600">{project.description}</p>}
+          <Link
+            to={`/mechanical?projectId=${project.id}`}
+            className="mt-4 inline-flex rounded bg-slate-900 px-3 py-2 text-sm text-white hover:bg-slate-700"
+          >
+            {t('mechanical.openProject')}
+          </Link>
           <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
             <div className="rounded-lg border bg-white p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
