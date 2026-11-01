@@ -304,7 +304,7 @@ const en = {
     noAnomalies: 'No configured-limit violations were detected. This is not a certification.',
     severity: { info: 'Information / not checked', warning: 'Warning', error: 'Error' },
   },
-  battery: {
+  battery: { title: 'Battery & Autonomy',
     intro: 'Configure cell voltage, series/parallel counts and discharge assumptions. Results distinguish theoretical, estimated and measured runtime.',
     groups: {
       cell: 'Cell and pack configuration',
