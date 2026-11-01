@@ -18,12 +18,12 @@ describe('App shell', () => {
     await i18n.changeLanguage('en')
   })
 
-  it('renders the 13 navigation links', () => {
+  it('renders the 14 navigation links', () => {
     renderAt('/')
-    expect(screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')).toHaveLength(13)
+    expect(screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')).toHaveLength(14)
   })
 
-  it('labels unimplemented modules explicitly (no fake features)', () => {
+  it('opens the in-app documentation page', () => {\n    renderAt('/documentation')\n    expect(screen.getByRole('heading', { name: 'RobotLab Web documentation' })).toBeInTheDocument()\n    expect(screen.getByRole('heading', { name: '1. What is RobotLab Web?' })).toBeInTheDocument()\n  })\n\n  it('labels unimplemented modules explicitly (no fake features)', () => {
     renderAt('/electrical')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
   })
