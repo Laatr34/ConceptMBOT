@@ -41,6 +41,12 @@ describe('App shell', () => {
     expect(screen.getByRole('button', { name: 'Analyze battery' })).toBeInTheDocument()
   })
 
+  it('opens the project diagnostics centre', () => {
+    renderAt('/diagnostics')
+    expect(screen.getByRole('heading', { name: 'Diagnostics' })).toBeInTheDocument()
+    expect(screen.getByText('Mechanical static diagnostics')).toBeInTheDocument()
+  })
+
   it('labels unimplemented modules explicitly (no fake features)', () => {
     renderAt('/sensors')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
