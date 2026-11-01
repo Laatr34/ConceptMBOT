@@ -23,7 +23,13 @@ describe('App shell', () => {
     expect(screen.getByRole('navigation', { name: 'Main' }).querySelectorAll('a')).toHaveLength(14)
   })
 
-  it('opens the in-app documentation page', () => {\n    renderAt('/documentation')\n    expect(screen.getByRole('heading', { name: 'RobotLab Web documentation' })).toBeInTheDocument()\n    expect(screen.getByRole('heading', { name: '1. What is RobotLab Web?' })).toBeInTheDocument()\n  })\n\n  it('labels unimplemented modules explicitly (no fake features)', () => {
+  it('opens the in-app documentation page', () => {
+    renderAt('/documentation')
+    expect(screen.getByRole('heading', { name: 'RobotLab Web documentation' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '1. What is RobotLab Web?' })).toBeInTheDocument()
+  })
+
+  it('labels unimplemented modules explicitly (no fake features)', () => {
     renderAt('/electrical')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
   })
