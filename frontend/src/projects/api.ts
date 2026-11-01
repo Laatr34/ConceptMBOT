@@ -26,6 +26,23 @@ export interface ProjectCreate {
   description?: string | null
   data?: Record<string, unknown>
 }
+export interface ProjectMechanicalMassPoint {
+  name: string
+  component_id: string | null
+  mass_kg: number | null
+  x_m: number | null
+  y_m: number | null
+  z_m: number | null
+}
+export interface ProjectMechanicalContact {
+  name: string
+  x_m: number | null
+  y_m: number | null
+}
+export interface ProjectMechanicalData {
+  mass_points: ProjectMechanicalMassPoint[]
+  contacts: ProjectMechanicalContact[]
+}
 const API_BASE = '/api/projects'
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
@@ -57,4 +74,11 @@ export const projectsApi = {
     }),
   history: (id: string) =>
     request<ProjectHistoryEntry[]>(`${API_BASE}/${id}/history`),
+  getMechanical: (id: string) =>
+    request<ProjectMechanicalData>(`${API_BASE}/${id}/mechanical`),
+  saveMechanical: (id: string, data: ProjectMechanicalData) =>
+    request<ProjectMechanicalData>(`${API_BASE}/${id}/mechanical`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
 }
