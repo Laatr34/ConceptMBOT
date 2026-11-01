@@ -50,6 +50,11 @@ const en = {
   },
   mechanical: {
     title: 'Mechanical analysis',
+    openProject: 'Open mechanical design',
+    projectContext: 'Editing the mechanical layout saved in this project.',
+    projectLoading: 'Loading this project’s mechanical layout…',
+    projectSaved: 'Mechanical layout saved to the project.',
+    projectLoadError: 'Unable to load this project’s mechanical layout.',
     intro: 'Total mass, centre of gravity, corner wheel loads and static stability. Computed by the backend; leave a field empty when the value is unknown — it will never be replaced by a default.',
     modelWarningTitle: 'Model limitation',
     modelWarning: 'This model assumes FOUR coplanar wheel contacts forming a rectangle centred on the origin (x forward, y left). A robot with two drive wheels and one caster (3 contacts) is NOT represented faithfully. Rigid body, static, flat ground: no dynamic load transfer, suspension or structural analysis.',
