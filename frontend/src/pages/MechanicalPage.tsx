@@ -11,7 +11,7 @@ import {
   type StabilityStatus,
 } from '../mechanical/api'
 import { convexHull } from '../mechanical/geometry'
-import { buildContactsInput, buildInput, parseOptionalNumber, type ContactRow, type Row } from '../mechanical/input'
+import { buildContactsInput, buildInput, type ContactRow, type Row } from '../mechanical/input'
 import { projectsApi, type ProjectMechanicalData } from '../projects/api'
 
 let nextId = 1
