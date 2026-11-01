@@ -10,7 +10,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { path: '/projects', labelKey: 'nav.projects', step: 1 },
   { path: '/robot-studio', labelKey: 'nav.robotStudio', step: 12 },
   { path: '/mechanical', labelKey: 'nav.mechanical', step: 6 },
-  { path: '/electrical', labelKey: 'nav.electrical', step: 8 },
+  { path: '/electrical', labelKey: 'nav.electrical', step: 3 },
   { path: '/power', labelKey: 'nav.power', step: 4 },
   { path: '/motorization', labelKey: 'nav.motorization', step: 5 },
   { path: '/sensors', labelKey: 'nav.sensors', step: 9 },
