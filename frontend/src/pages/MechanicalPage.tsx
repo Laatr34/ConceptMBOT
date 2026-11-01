@@ -134,11 +134,14 @@ export default function MechanicalPage() {
           setSavedLayout(await projectsApi.saveMechanical(projectId, layout))
           setProjectSaved(true)
         }
-        const result = projectId
-          ? await mechanicalApi.analyzeProjectContacts(projectId)
-          : await mechanicalApi.analyzeContacts(built.input)
-        setContactsAnalysis(result)
-        setMassSources('mass_sources' in result ? result.mass_sources : [])
+        if (projectId) {
+          const result = await mechanicalApi.analyzeProjectContacts(projectId)
+          setContactsAnalysis(result)
+          setMassSources(result.mass_sources)
+        } else {
+          setContactsAnalysis(await mechanicalApi.analyzeContacts(built.input))
+          setMassSources([])
+        }
         setAnalysis(null)
         setPolygon(convexHull(built.input.contacts.map((c) => ({ x_m: c.x_m, y_m: c.y_m }))))
         setDrawn(
