@@ -110,7 +110,7 @@ export default function DocumentationPage() {
             <p className="text-sm leading-6 text-slate-700">{t('documentation.modules.body')}</p>
             <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
               {(['projects', 'library', 'mechanical', 'electrical', 'battery', 'motorization', 'diagnostics', 'circuit', 'sensors', 'simulation', 'reports'] as const).map((module) => {
-                const state = module === 'projects' || module === 'library' ? 'done' : module === 'mechanical' ? 'partial' : 'planned'
+                const state = module === 'projects' || module === 'library' ? 'done' : ['mechanical', 'electrical', 'battery', 'motorization'].includes(module) ? 'partial' : 'planned'
                 return (
                   <div key={module} className="flex flex-col gap-2 border-b border-slate-100 p-4 last:border-0 sm:flex-row sm:items-start sm:justify-between">
                     <div>
