@@ -107,13 +107,9 @@ def analyze_battery(payload: BatteryAnalysisInput) -> BatteryAnalysisResponse:
     return BatteryAnalysisResponse(
         pack_voltage=pack_voltage,
         pack_capacity_c=pack_capacity_c,
-        pack_capacity_ah=_converted(
-            pack_capacity_c, 3600.0, "Ah", "Qpack (Ah) = Qpack (C) / 3600"
-        ),
+        pack_capacity_ah=_converted(pack_capacity_c, 3600.0, "Ah", "Qpack (Ah) = Qpack (C) / 3600"),
         nominal_energy_j=nominal_energy_j,
-        nominal_energy_wh=_converted(
-            nominal_energy_j, 3600.0, "Wh", "E (Wh) = E (J) / 3600"
-        ),
+        nominal_energy_wh=_converted(nominal_energy_j, 3600.0, "Wh", "E (Wh) = E (J) / 3600"),
         usable_energy_j=usable_energy_j,
         usable_energy_wh=_converted(
             usable_energy_j, 3600.0, "Wh", "Eusable (Wh) = Eusable (J) / 3600"
@@ -123,11 +119,7 @@ def analyze_battery(payload: BatteryAnalysisInput) -> BatteryAnalysisResponse:
             theoretical_autonomy_s, 3600.0, "h", "t (h) = t (s) / 3600"
         ),
         estimated_autonomy_s=estimated_autonomy_s,
-        estimated_autonomy_h=_converted(
-            estimated_autonomy_s, 3600.0, "h", "t (h) = t (s) / 3600"
-        ),
+        estimated_autonomy_h=_converted(estimated_autonomy_s, 3600.0, "h", "t (h) = t (s) / 3600"),
         measured_autonomy_s=measured_autonomy_s,
-        measured_autonomy_h=_converted(
-            measured_autonomy_s, 3600.0, "h", "t (h) = t (s) / 3600"
-        ),
+        measured_autonomy_h=_converted(measured_autonomy_s, 3600.0, "h", "t (h) = t (s) / 3600"),
     )
