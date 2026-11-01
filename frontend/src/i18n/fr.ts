@@ -4,7 +4,7 @@ type Dict = Translations<typeof en>
 const fr: Dict = {
   app: { name: 'RobotLab Web', tagline: "Atelier virtuel de conception robotique" },
   nav: {
-    dashboard: 'Tableau de bord', projects: 'Mes projets', robotStudio: 'Robot Studio',
+    dashboard: 'Tableau de bord', projects: 'Mes projets', robotStudio: 'Robot Studio', documentation: 'Documentation',
     mechanical: 'Conception mécanique', electrical: 'Conception électrique',
     power: 'Alimentation & batterie', motorization: 'Motorisation',
     sensors: 'Capteurs & électronique', simulation: 'Simulation 2D',
@@ -105,6 +105,113 @@ const fr: Dict = {
     },
     resultStatus: { theoretical: 'Théorique', estimated: 'Estimé', measured: 'Mesuré', not_evaluable: 'Non évaluable' },
     stabilityStatus: { unknown: 'Inconnue', stable: 'Stable', marginal: 'Limite', unstable: 'Instable' },
+  },
+  documentation: {
+    eyebrow: 'GUIDE DU LOGICIEL',
+    title: 'Documentation de RobotLab Web',
+    intro: "Un guide pratique de l'application actuelle : ses fonctions disponibles, la gestion des données et des calculs, ainsi que les parties encore en développement.",
+    version: 'Documentation évolutive · liée à l’application',
+    contents: 'Sur cette page',
+    nav: {
+      overview: 'Présentation', workflow: 'Flux de travail conseillé', architecture: 'Architecture',
+      modules: 'Modules et état', data: 'Projets et composants',
+      calculations: 'Règles de calcul', api: 'API backend', limits: 'Limites et sécurité',
+      roadmap: 'Feuille de route', development: 'Lancer et développer',
+    },
+    overview: {
+      title: '1. Qu’est-ce que RobotLab Web ?',
+      body: "RobotLab Web est un espace d'ingénierie accessible depuis un navigateur pour préparer un robot, organiser les données de ses composants et exécuter des calculs traçables. À terme, le logiciel doit couvrir la conception, le dimensionnement, les diagnostics, la simulation et les rapports. L'application actuelle est en cours de développement : ce n'est pas encore une suite d'ingénierie complète.",
+      cards: {
+        design: { title: 'Organiser', body: 'Créer des projets de robot et regrouper les données de conception.' },
+        calculate: { title: 'Calculer', body: 'Utiliser les moteurs de calcul du backend ; le navigateur ne fabrique pas de résultats techniques.' },
+        verify: { title: 'Examiner', body: 'Vérifier le statut des résultats, les hypothèses, les données manquantes et les limites du modèle.' },
+      },
+    },
+    workflow: {
+      title: '2. Flux de travail conseillé',
+      body: 'Commence par créer un projet, ajoute uniquement des informations appuyées par une fiche technique ou une mesure physique, puis lance les analyses disponibles.',
+      steps: {
+        project: { title: 'Créer un projet', body: 'Donne-lui un nom et une description. Les documents de projet sont versionnés et exportables en JSON.' },
+        library: { title: 'Constituer la bibliothèque', body: 'Saisis la référence exacte, l’URL de la fiche technique, les paramètres, les unités et les champs manquants. Les inconnues restent nulles.' },
+        design: { title: 'Décrire la conception', body: 'Pour l’analyse mécanique disponible, saisis les points de masse et les coordonnées des contacts au sol.' },
+        review: { title: 'Examiner les résultats', body: 'Vérifie les statuts, hypothèses et limites. Un résultat théorique n’est pas une validation physique.' },
+      },
+    },
+    architecture: {
+      title: '3. Architecture logicielle',
+      body: "Le dépôt est un monorepo. Le frontend constitue l'interface ; le backend est responsable de la validation, de la persistance et des calculs d'ingénierie.",
+      rule: "Règle importante : les calculs techniques résident dans backend/app/engines. Le frontend appelle l'API et affiche sa réponse ; il ne doit pas dupliquer les formules d'ingénierie.",
+    },
+    modules: {
+      title: '4. Modules et état d’implémentation',
+      body: "L'état reflète le plan de développement actuel. « En cours » signifie qu'une partie utilisable existe, mais que le module n'est pas complet. « Prévu » signifie qu'aucune fonction opérationnelle n'est encore disponible.",
+      items: {
+        projects: { title: 'Gestion des projets', body: 'Créer, lister, ouvrir, dupliquer et supprimer des projets ; import/export JSON, sauvegarde automatique, historique des révisions et données versionnées.' },
+        library: { title: 'Bibliothèque de composants', body: 'Fiches structurées, fabricant/référence, URL de fiche technique, paramètres avec unités, champs manquants et statut déclaré par le propriétaire.' },
+        mechanical: { title: 'Conception mécanique', body: 'Points de masse, centre de gravité, charges sur les roues/contacts, analyse statique de sustentation et vue de dessus 2D. La liaison au projet et la provenance des masses sont en cours de finalisation et validation.' },
+        electrical: { title: 'Conception électrique', body: 'Le moteur de calcul électrique est en développement. Le flux API complet et la page utilisateur ne sont pas encore disponibles.' },
+        battery: { title: 'Batterie et autonomie', body: 'Le moteur batterie et autonomie est en cours ; le parcours utilisateur complet et sa validation restent à terminer.' },
+        motorization: { title: 'Motorisation', body: 'Un moteur de calcul pour la traction différentielle existe, mais l’API, l’intégration aux projets et la page frontend restent à réaliser.' },
+        diagnostics: { title: 'Diagnostics', body: 'Un centre de diagnostics avec niveaux de gravité et avertissements structurés est prévu.' },
+        circuit: { title: 'Éditeur de circuit visuel', body: 'Un modèle de graphe pour les composants, broches et connexions électriques est prévu avant l’éditeur visuel.' },
+        sensors: { title: 'Capteurs et interfaces', body: 'La compatibilité des niveaux logiques, les limites GPIO et les contrôles d’interfaces sont prévus.' },
+        simulation: { title: 'Simulation 2D', body: 'Une simulation déterministe à pas fixe, avec graine aléatoire, collisions et lancer de rayons LiDAR, est prévue.' },
+        reports: { title: 'Rapports', body: 'La génération de rapports PDF et CSV est prévue.' },
+      },
+    },
+    status: { done: 'Implémenté', partial: 'En cours', planned: 'Prévu' },
+    data: {
+      title: '5. Projets et données des composants',
+      body: 'Les données d’un projet et les références matérielles ont des rôles différents. Relie-les explicitement et conserve la provenance de chaque valeur.',
+      cards: {
+        projects: { title: 'Projets', body: 'Un projet est un document JSON versionné avec identifiant, description, dates et historique des révisions. La configuration mécanique peut enregistrer les points de masse et les contacts au sol.' },
+        components: { title: 'Bibliothèque de composants', body: 'La bibliothèque est vide au départ. Chaque paramètre doit comporter une valeur, une unité et, si possible, une page source. Les champs manquants sont explicites ; aucune valeur inconnue n’est remplacée par une estimation arbitraire.' },
+      },
+    },
+    calculations: {
+      title: '6. Règles des calculs et résultats',
+      body: 'Le backend renvoie des résultats structurés, pas de simples nombres sans contexte. Examine les métadonnées avec chaque valeur.',
+      rules: {
+        unknown: 'Une donnée inconnue reste nulle. Ne saisis jamais zéro uniquement pour permettre au calcul de s’exécuter.',
+        traceable: 'Un résultat doit exposer son unité, sa formule, ses entrées, ses hypothèses et sa source.',
+        status: 'Distingue les résultats théoriques, estimés et mesurés. « Non évaluable » est un résultat valide.',
+        limits: 'Lorsqu’une entrée manque ou qu’une hypothèse du modèle n’est pas justifiée, le résultat doit expliquer la donnée manquante ou la limite.',
+      },
+    },
+    api: {
+      title: '7. API backend',
+      body: 'Le frontend envoie ses requêtes aux routes /api. En développement local, Vite redirige /api vers le serveur FastAPI sur le port 8000.',
+      swagger: 'Référence interactive de l’API générée par FastAPI (disponible lorsque le backend fonctionne).',
+    },
+    limits: {
+      title: '8. Limites et utilisation sûre',
+      warning: 'RobotLab Web est une aide à la conception. Ce n’est pas un logiciel d’ingénierie certifié et il ne doit pas être l’unique base de décisions susceptibles de mettre en danger des personnes ou du matériel.',
+      items: {
+        notCertified: 'Tous les résultats nécessitent une revue indépendante, un prototypage et des mesures physiques avant de faire fonctionner un robot réel.',
+        datasheets: 'Le statut « vérifié » d’un composant est déclaré par le propriétaire du projet. L’application n’authentifie pas indépendamment les fiches fabricant.',
+        mechanics: 'Le modèle mécanique actuel est statique et simplifié. Sa marge de sustentation est géométrique ; il ne modélise pas les effets de la hauteur du centre de gravité, les pentes, accélérations, freinages, suspensions ou résistances structurelles.',
+        notImplemented: 'Les entrées de navigation non implémentées sont indiquées comme prévues ou non implémentées. Ne les considère pas comme des modules fonctionnels.',
+      },
+    },
+    roadmap: {
+      title: '9. Feuille de route',
+      body: 'Le plan de développement est maintenu dans le dépôt. Une étape ne doit passer à DONE qu’après exécution réussie des tests et contrôles requis.',
+      link: 'Ouvrir le plan de développement détaillé',
+    },
+    development: {
+      title: '10. Lancer et développer en local',
+      body: 'Prérequis : Python 3.13 ou plus récent et Node.js 22. Utilise deux terminaux depuis la racine du dépôt.',
+      backend: {
+        title: 'Backend · terminal 1',
+        commands: 'cd backend\npython -m venv .venv\nsource .venv/bin/activate\npip install -e ".[dev]"\nuvicorn app.main:app --reload',
+      },
+      frontend: {
+        title: 'Frontend · terminal 2',
+        commands: 'cd frontend\nnpm ci\nnpm run dev',
+      },
+      final: 'Frontend : http://localhost:5173 · Santé backend : http://localhost:8000/health · Référence API : http://localhost:8000/docs. Avant un commit, exécute les contrôles backend Ruff/format/mypy/pytest et frontend lint/typecheck/test/build.',
+    },
+    footer: 'Cette documentation décrit l’implémentation présente dans cette branche. Consulte docs/PLAN.md et le code source pour l’état détaillé le plus récent.',
   },
   disclaimer: "Les résultats sont des aides à la conception, pas des calculs certifiés industriellement. Le prototypage et la mesure physiques restent nécessaires.",
 }
