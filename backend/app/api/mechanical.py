@@ -170,7 +170,6 @@ def analyze_mechanical_contacts(payload: ContactsAnalysisInput) -> ContactsAnaly
     return ContactsAnalysisResponse(center_of_gravity=cog, contact_loads=loads, stability=stability)
 
 
-
 def _resolve_project_mass(
     session: Session, point: ProjectMechanicalMassPoint
 ) -> tuple[float | None, ProjectMassSource]:
@@ -277,7 +276,10 @@ def analyze_project_contacts(
     if missing_contacts:
         raise HTTPException(
             status_code=422,
-            detail={"message": "Ground-contact coordinates are incomplete.", "missing_inputs": missing_contacts},
+            detail={
+                "message": "Ground-contact coordinates are incomplete.",
+                "missing_inputs": missing_contacts,
+            },
         )
 
     resolved_points: list[MassPoint] = []
