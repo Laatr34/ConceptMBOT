@@ -222,11 +222,26 @@ describe('MechanicalPage', () => {
         if (url === `/api/projects/${projectId}/mechanical` && !init?.method) {
           return Promise.resolve({ ok: true, status: 200, json: async () => layout, text: async () => '' })
         }
+        if (url === '/api/components') {
+          return Promise.resolve({ ok: true, status: 200, json: async () => [], text: async () => '' })
+        }
         if (url === `/api/projects/${projectId}/mechanical` && init?.method === 'PUT') {
           return Promise.resolve({ ok: true, status: 200, json: async () => layout, text: async () => '' })
         }
         return Promise.resolve({
-          ok: true, status: 200, json: async () => contactsResponse, text: async () => '',
+          ok: true,
+          status: 200,
+          json: async () => ({
+            ...contactsResponse,
+            mass_sources: [{
+              name: 'Battery',
+              source: 'project_override',
+              component_id: null,
+              source_page: null,
+              detail: 'Mass entered directly in this project.',
+            }],
+          }),
+          text: async () => '',
         })
       })
       vi.stubGlobal('fetch', fetchMock)
@@ -237,13 +252,15 @@ describe('MechanicalPage', () => {
       await screen.findByTestId('support-polygon')
 
       expect(fetchMock.mock.calls[0][0]).toBe(`/api/projects/${projectId}/mechanical`)
-      expect(fetchMock.mock.calls[1][0]).toBe(`/api/projects/${projectId}/mechanical`)
-      expect(fetchMock.mock.calls[1][1].method).toBe('PUT')
-      const saved = JSON.parse(fetchMock.mock.calls[1][1].body)
+      expect(fetchMock.mock.calls[1][0]).toBe('/api/components')
+      expect(fetchMock.mock.calls[2][0]).toBe(`/api/projects/${projectId}/mechanical`)
+      expect(fetchMock.mock.calls[2][1].method).toBe('PUT')
+      const saved = JSON.parse(fetchMock.mock.calls[2][1].body)
       expect(saved.mass_points[0]).toEqual(layout.mass_points[0])
       expect(saved.contacts).toEqual(layout.contacts)
-      expect(fetchMock.mock.calls[2][0]).toBe('/api/mechanical/analyze-contacts')
+      expect(fetchMock.mock.calls[3][0]).toBe(`/api/mechanical/projects/${projectId}/analyze-contacts`)
       expect(screen.getByText('Mechanical layout saved to the project.')).toBeInTheDocument()
+      expect(screen.getByText('Project-entered mass')).toBeInTheDocument()
       window.history.replaceState({}, '', '/')
     })
   })
