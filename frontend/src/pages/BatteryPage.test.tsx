@@ -131,7 +131,7 @@ describe('BatteryPage', () => {
   it('is available in French', async () => {
     await i18n.changeLanguage('fr')
     render(<BatteryPage />)
-    expect(screen.getByRole('heading', { name: 'Batterie et autonomie' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Alimentation & batterie' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Analyser la batterie' })).toBeInTheDocument()
   })
 })
