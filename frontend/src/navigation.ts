@@ -17,6 +17,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { path: '/simulation', labelKey: 'nav.simulation', step: 10 },
   { path: '/diagnostics', labelKey: 'nav.diagnostics', step: 7 },
   { path: '/library', labelKey: 'nav.library', step: 2 },
+  { path: '/documentation', labelKey: 'nav.documentation', step: 0 },
   { path: '/reports', labelKey: 'nav.reports', step: 11 },
   { path: '/settings', labelKey: 'nav.settings', step: 12 },
 ]
