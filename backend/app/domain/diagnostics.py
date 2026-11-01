@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DiagnosticSeverity(str, Enum):
@@ -28,4 +28,4 @@ class Diagnostic(BaseModel):
     correction: str
     severity: DiagnosticSeverity
     source_result: str
-    missing_inputs: list[str] = []
+    missing_inputs: list[str] = Field(default_factory=list)
