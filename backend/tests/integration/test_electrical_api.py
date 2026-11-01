@@ -90,8 +90,14 @@ def test_electrical_analysis_rejects_invalid_regulator_efficiency() -> None:
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.post(
             "/api/electrical/analyze",
-            json={"regulator": {"input_voltage_v": 12, "output_voltage_v": 5,
-                                "output_current_a": 2, "efficiency": 1.1}},
+            json={
+                "regulator": {
+                    "input_voltage_v": 12,
+                    "output_voltage_v": 5,
+                    "output_current_a": 2,
+                    "efficiency": 1.1,
+                }
+            },
         )
     assert response.status_code == 422
 
