@@ -44,7 +44,7 @@ describe('App shell', () => {
   it('opens the project diagnostics centre', () => {
     renderAt('/diagnostics')
     expect(screen.getByRole('heading', { name: 'Diagnostics' })).toBeInTheDocument()
-    expect(screen.getByText('Mechanical static diagnostics')).toBeInTheDocument()
+    expect(screen.getByText('Current diagnostic scope')).toBeInTheDocument()
   })
 
   it('labels unimplemented modules explicitly (no fake features)', () => {
