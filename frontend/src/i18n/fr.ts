@@ -148,10 +148,10 @@ const fr: Dict = {
       items: {
         projects: { title: 'Gestion des projets', body: 'Créer, lister, ouvrir, dupliquer et supprimer des projets ; import/export JSON, sauvegarde automatique, historique des révisions et données versionnées.' },
         library: { title: 'Bibliothèque de composants', body: 'Fiches structurées, fabricant/référence, URL de fiche technique, paramètres avec unités, champs manquants et statut déclaré par le propriétaire.' },
-        mechanical: { title: 'Conception mécanique', body: 'Points de masse, centre de gravité, charges sur les roues/contacts, analyse statique de sustentation et vue de dessus 2D. La liaison au projet et la provenance des masses sont en cours de finalisation et validation.' },
-        electrical: { title: 'Conception électrique', body: 'Le moteur de calcul électrique est en développement. Le flux API complet et la page utilisateur ne sont pas encore disponibles.' },
+        mechanical: { title: 'Conception mécanique', body: 'La page 2D charge et enregistre les points de masse et les contacts au sol du projet. Les liens vers la bibliothèque ne résolvent une masse qu’à partir d’un paramètre kg non ambigu déclaré vérifié par le propriétaire ; le placement automatisé, la vue 3D et la validation du modèle restent à faire.' },
+        electrical: { title: 'Conception électrique', body: 'Le moteur DC, l’API POST et la page React couvrent puissance/courant, chute de tension, pertes du régulateur, charges du rail et vérification des limites explicites.' },
         battery: { title: 'Batterie et autonomie', body: 'Le moteur batterie et autonomie est en cours ; le parcours utilisateur complet et sa validation restent à terminer.' },
-        motorization: { title: 'Motorisation', body: 'Un moteur de calcul pour la traction différentielle existe, mais l’API, l’intégration aux projets et la page frontend restent à réaliser.' },
+        motorization: { title: 'Motorisation', body: 'Le moteur différentiel, l’API POST et la page React couvrent cinématique des roues, effort en pente, couple, adhérence et courant producteur de couple. La sélection des paramètres moteur depuis un projet reste à intégrer.' },
         diagnostics: { title: 'Diagnostics', body: 'Un centre de diagnostics avec niveaux de gravité et avertissements structurés est prévu.' },
         circuit: { title: 'Éditeur de circuit visuel', body: 'Un modèle de graphe pour les composants, broches et connexions électriques est prévu avant l’éditeur visuel.' },
         sensors: { title: 'Capteurs et interfaces', body: 'La compatibilité des niveaux logiques, les limites GPIO et les contrôles d’interfaces sont prévus.' },
