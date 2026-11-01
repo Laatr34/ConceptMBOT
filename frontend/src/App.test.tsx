@@ -35,6 +35,12 @@ describe('App shell', () => {
     expect(screen.getByRole('button', { name: 'Analyze electrical design' })).toBeInTheDocument()
   })
 
+  it('opens the battery and autonomy module', () => {
+    renderAt('/power')
+    expect(screen.getByRole('heading', { name: 'Battery & Power' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Analyze battery' })).toBeInTheDocument()
+  })
+
   it('labels unimplemented modules explicitly (no fake features)', () => {
     renderAt('/sensors')
     expect(screen.getByRole('status')).toHaveTextContent('Not implemented yet')
