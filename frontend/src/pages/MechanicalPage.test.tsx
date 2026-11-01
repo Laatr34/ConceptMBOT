@@ -260,7 +260,7 @@ describe('MechanicalPage', () => {
       expect(saved.contacts).toEqual(layout.contacts)
       expect(fetchMock.mock.calls[3][0]).toBe(`/api/mechanical/projects/${projectId}/analyze-contacts`)
       expect(screen.getByText('Mechanical layout saved to the project.')).toBeInTheDocument()
-      expect(screen.getByText('Project-entered mass')).toBeInTheDocument()
+      expect(await screen.findByText('Project-entered mass')).toBeInTheDocument()
       window.history.replaceState({}, '', '/')
     })
   })
