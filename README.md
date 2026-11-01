@@ -195,7 +195,7 @@ Single source of truth: `docs/PLAN.md`.
 
 **Step 5 — IN PROGRESS** — differential-drive motorization/traction engine exists and is unit-tested; no API or UI yet.
 
-**Step 6 — IN PROGRESS** — mass/CoG/four-corner-load/static-stability engine, `POST /api/mechanical/analyze` (router registered in `main.py`; it was missing before), and a bilingual Mechanical Design page with a to-scale 2D top view. Limitation: the model assumes four coplanar wheel contacts in a rectangle; the museum robot (2 drive wheels + 1 caster) needs a 3-contact support-polygon model, not implemented yet. Inputs are entered manually, not yet read from the project.
+**Step 6 — IN PROGRESS** — mass/CoG engine; two support models: a four-wheel rectangle and a support polygon for any contact layout (exact static loads for exactly 3 contacts such as 2 drive wheels + caster; loads not evaluable for 4+ contacts because they depend on stiffness). Endpoints: `POST /api/mechanical/analyze` and `/analyze-contacts` (router registered in `main.py`; it was missing before). Invalid physical inputs now return HTTP 422. Bilingual Mechanical Design page with a to-scale 2D top view. Not done: inputs are entered manually (not read from the project), no 3D view, margin is geometric only (ignores CoG height, slopes, braking).
 
 
 ### 8. Quick start
