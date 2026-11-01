@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from app.application import project_service
 from app.application.project_service import ProjectNotFoundError
 from app.domain.calc_result import CalcResult, ResultStatus
-from app.domain.projects import ProjectMechanicalData
+from app.domain.projects import ProjectMechanicalData, ProjectMechanicalMassPoint
 from app.infrastructure.component_models import ComponentRecord
 from app.infrastructure.database import get_session
 from app.engines.mechanical import (
@@ -172,7 +172,7 @@ def analyze_mechanical_contacts(payload: ContactsAnalysisInput) -> ContactsAnaly
 
 
 def _resolve_project_mass(
-    session: Session, point: ProjectMechanicalData
+    session: Session, point: ProjectMechanicalMassPoint
 ) -> tuple[float | None, ProjectMassSource]:
     """Use an explicit project mass first, otherwise one owner-verified kg parameter."""
 
@@ -295,11 +295,10 @@ def analyze_project_contacts(
             )
         )
 
-    contacts = [
-        ContactPoint(contact.name, contact.x_m, contact.y_m)
-        for contact in layout.contacts
-        if contact.x_m is not None and contact.y_m is not None
-    ]
+    contacts: list[ContactPoint] = []
+    for contact in layout.contacts:
+        assert contact.x_m is not None and contact.y_m is not None
+        contacts.append(ContactPoint(contact.name, contact.x_m, contact.y_m))
     cog = calculate_center_of_gravity(resolved_points)
     stability = calculate_support_polygon_stability(
         cg_x_m=cog.x_m.value, cg_y_m=cog.y_m.value, contacts=contacts
