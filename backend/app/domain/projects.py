@@ -60,7 +60,7 @@ class ProjectDocument(BaseModel):
     @classmethod
     def validate_project_data(cls, value: Any) -> dict[str, Any]:
         if not isinstance(value, dict):
-            raise ValueError("project data must be an object")
+            raise TypeError("project data must be an object")
         data = dict(value)
         mechanical = ProjectMechanicalData.model_validate(data.get("mechanical", {}))
         data["mechanical"] = mechanical.model_dump(mode="json")
