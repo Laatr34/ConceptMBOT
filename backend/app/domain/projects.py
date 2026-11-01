@@ -6,9 +6,41 @@ from datetime import datetime
 from typing import Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-CURRENT_SCHEMA_VERSION: Literal[1] = 1
+CURRENT_SCHEMA_VERSION: Literal[2] = 2
+
+
+class ProjectMechanicalMassPoint(BaseModel):
+    """Project-owned placement for one component or assembly mass point."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=120)
+    component_id: UUID | None = None
+    mass_kg: float | None = None
+    x_m: float | None = None
+    y_m: float | None = None
+    z_m: float | None = None
+
+
+class ProjectMechanicalContact(BaseModel):
+    """Ground-contact position in the robot-fixed XY plane."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=120)
+    x_m: float | None = None
+    y_m: float | None = None
+
+
+class ProjectMechanicalData(BaseModel):
+    """Project-specific mechanical layout; unknown measurements remain null."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    mass_points: list[ProjectMechanicalMassPoint] = Field(default_factory=list)
+    contacts: list[ProjectMechanicalContact] = Field(default_factory=list)
 
 
 class ProjectDocument(BaseModel):
@@ -16,13 +48,23 @@ class ProjectDocument(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal[1] = CURRENT_SCHEMA_VERSION
+    schema_version: Literal[2] = CURRENT_SCHEMA_VERSION
     id: UUID
     name: str = Field(min_length=1, max_length=120)
     description: str | None = Field(default=None, max_length=2_000)
     created_at: datetime
     updated_at: datetime
     data: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("data", mode="before")
+    @classmethod
+    def validate_project_data(cls, value: Any) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            raise ValueError("project data must be an object")
+        data = dict(value)
+        mechanical = ProjectMechanicalData.model_validate(data.get("mechanical", {}))
+        data["mechanical"] = mechanical.model_dump(mode="json")
+        return data
 
 
 class ProjectCreate(BaseModel):
@@ -68,9 +110,18 @@ class ProjectHistoryEntry(BaseModel):
 
 
 def migrate_project_document(raw: dict[str, Any]) -> ProjectDocument:
-    """Validate v1 documents; reject unknown versions instead of guessing."""
+    """Migrate v1 documents explicitly; reject unknown versions instead of guessing."""
 
     version = raw.get("schema_version")
-    if version != CURRENT_SCHEMA_VERSION:
+    migrated = dict(raw)
+    if version == 1:
+        data = migrated.get("data", {})
+        if not isinstance(data, dict):
+            raise ValueError("project data must be an object")
+        data = dict(data)
+        data.setdefault("mechanical", {})
+        migrated["data"] = data
+        migrated["schema_version"] = CURRENT_SCHEMA_VERSION
+    elif version != CURRENT_SCHEMA_VERSION:
         raise ValueError(f"Unsupported project schema version: {version!r}")
-    return ProjectDocument.model_validate(raw)
+    return ProjectDocument.model_validate(migrated)

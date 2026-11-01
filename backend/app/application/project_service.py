@@ -34,11 +34,12 @@ def _document(record: ProjectRecord) -> ProjectDocument:
 
 
 def _summary(record: ProjectRecord) -> ProjectSummary:
+    document = _document(record)
     return ProjectSummary(
         id=UUID(record.id),
         name=record.name,
         description=record.description,
-        schema_version=int(record.document["schema_version"]),
+        schema_version=document.schema_version,
         revision=record.revision,
         created_at=record.created_at,
         updated_at=record.updated_at,
@@ -109,7 +110,9 @@ def update_project(
 
     current = _document(record)
     changes = payload.model_dump(exclude_unset=True)
-    document = current.model_copy(update={**changes, "updated_at": _now()})
+    document = ProjectDocument.model_validate(
+        {**current.model_dump(mode="python"), **changes, "updated_at": _now()}
+    )
     record.name = document.name
     record.description = document.description
     record.document = document.model_dump(mode="json")
