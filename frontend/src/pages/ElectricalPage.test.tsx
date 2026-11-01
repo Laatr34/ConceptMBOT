@@ -73,7 +73,7 @@ describe('ElectricalPage', () => {
     expect(payload.rail.voltage_v).toBeNull()
     expect(payload.rail.loads).toEqual([{ name: 'Load 1', current_a: null, power_w: null }])
     expect(screen.getAllByText('Not evaluable').length).toBeGreaterThan(4)
-    expect(screen.getByText('Information / not checked')).toBeInTheDocument()
+    expect(screen.getByText(/Information \/ not checked/)).toBeInTheDocument()
   })
 
   it('rejects a load with both current and power before calling the API', async () => {
