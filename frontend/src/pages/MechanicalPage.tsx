@@ -8,7 +8,7 @@ import {
   type ContactsAnalysis,
   type MechanicalAnalysis,
   type MechanicalAnalysisInput,
-  type ProjectMassSource,
+  type ProjectContactsAnalysis,
   type StabilityStatus,
 } from '../mechanical/api'
 import { convexHull } from '../mechanical/geometry'
@@ -44,7 +44,6 @@ export default function MechanicalPage() {
   const [projectSaved, setProjectSaved] = useState(false)
   const [savedLayout, setSavedLayout] = useState<ProjectMechanicalData | null>(null)
   const [componentOptions, setComponentOptions] = useState<ComponentSummary[]>([])
-  const [massSources, setMassSources] = useState<ProjectMassSource[]>([])
 
   useEffect(() => {
     if (!projectId) return
@@ -109,7 +108,6 @@ export default function MechanicalPage() {
         }
         setAnalysis(await mechanicalApi.analyze(built.input))
         setContactsAnalysis(null)
-        setMassSources([])
         setAnalysedInput(built.input)
         setPolygon(null)
         setDrawn(
@@ -137,10 +135,8 @@ export default function MechanicalPage() {
         if (projectId) {
           const result = await mechanicalApi.analyzeProjectContacts(projectId)
           setContactsAnalysis(result)
-          setMassSources(result.mass_sources)
         } else {
           setContactsAnalysis(await mechanicalApi.analyzeContacts(built.input))
-          setMassSources([])
         }
         setAnalysis(null)
         setPolygon(convexHull(built.input.contacts.map((c) => ({ x_m: c.x_m, y_m: c.y_m }))))
@@ -157,6 +153,10 @@ export default function MechanicalPage() {
     }
   }
 
+  const massSources =
+    projectId && contactsAnalysis && 'mass_sources' in contactsAnalysis
+      ? (contactsAnalysis as ProjectContactsAnalysis).mass_sources
+      : []
   const cog = (analysis ?? contactsAnalysis)?.center_of_gravity
   const cogPoint =
     cog && cog.x_m.value !== null && cog.y_m.value !== null
