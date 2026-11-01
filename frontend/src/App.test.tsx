@@ -37,7 +37,7 @@ describe('App shell', () => {
 
   it('opens the battery and autonomy module', () => {
     renderAt('/power')
-    expect(screen.getByRole('heading', { name: 'Power & Battery' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Battery & Autonomy' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Analyze battery' })).toBeInTheDocument()
   })
 
