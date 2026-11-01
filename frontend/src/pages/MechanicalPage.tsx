@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import CalcResultTable, { type CalcRow } from '../components/CalcResultTable'
 import TopView from '../mechanical/TopView'
@@ -11,15 +11,17 @@ import {
   type StabilityStatus,
 } from '../mechanical/api'
 import { convexHull } from '../mechanical/geometry'
-import { buildContactsInput, buildInput, type ContactRow, type Row } from '../mechanical/input'
+import { buildContactsInput, buildInput, parseOptionalNumber, type ContactRow, type Row } from '../mechanical/input'
+import { projectsApi, type ProjectMechanicalData } from '../projects/api'
 
 let nextId = 1
-const emptyRow = (): Row => ({ id: nextId++, name: '', mass: '', x: '', y: '', z: '' })
+const emptyRow = (): Row => ({ id: nextId++, name: '', component_id: null, mass: '', x: '', y: '', z: '' })
 const emptyContact = (name = ''): ContactRow => ({ id: nextId++, name, x: '', y: '' })
 type Mode = 'rectangle' | 'contacts'
 
 export default function MechanicalPage() {
   const { t } = useTranslation()
+  const projectId = new URLSearchParams(window.location.search).get('projectId')
   const [rows, setRows] = useState<Row[]>(() => [emptyRow()])
   const [wheelbase, setWheelbase] = useState('')
   const [track, setTrack] = useState('')
@@ -36,6 +38,45 @@ export default function MechanicalPage() {
   const [analysedInput, setAnalysedInput] = useState<MechanicalAnalysisInput | null>(null)
   const [polygon, setPolygon] = useState<{ x_m: number; y_m: number }[] | null>(null)
   const [drawn, setDrawn] = useState<{ x_m: number; y_m: number }[]>([])
+  const [projectLoading, setProjectLoading] = useState(Boolean(projectId))
+  const [projectSaved, setProjectSaved] = useState(false)
+  const [savedLayout, setSavedLayout] = useState<ProjectMechanicalData | null>(null)
+
+  useEffect(() => {
+    if (!projectId) return
+    let active = true
+    void projectsApi.getMechanical(projectId).then(
+      (layout) => {
+        if (!active) return
+        setSavedLayout(layout)
+        setRows(layout.mass_points.length > 0 ? layout.mass_points.map((point) => ({
+          id: nextId++,
+          name: point.name,
+          component_id: point.component_id,
+          mass: point.mass_kg === null ? '' : String(point.mass_kg),
+          x: point.x_m === null ? '' : String(point.x_m),
+          y: point.y_m === null ? '' : String(point.y_m),
+          z: point.z_m === null ? '' : String(point.z_m),
+        })) : [emptyRow()])
+        if (layout.contacts.length > 0) {
+          setContacts(layout.contacts.map((contact) => ({
+            id: nextId++,
+            name: contact.name,
+            x: contact.x_m === null ? '' : String(contact.x_m),
+            y: contact.y_m === null ? '' : String(contact.y_m),
+          })))
+          setMode(layout.contacts.length >= 3 ? 'contacts' : 'rectangle')
+        }
+        setProjectLoading(false)
+      },
+      () => {
+        if (!active) return
+        setError(t('mechanical.projectLoadError'))
+        setProjectLoading(false)
+      },
+    )
+    return () => { active = false }
+  }, [projectId, t])
 
   const update = (id: number, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)))
@@ -49,6 +90,17 @@ export default function MechanicalPage() {
         if ('invalid' in built) {
           setError(`${t('mechanical.invalidNumber')} ${built.invalid.join(', ')}`)
           return
+        }
+        if (projectId) {
+          const layout: ProjectMechanicalData = {
+            mass_points: built.input.mass_points.map((point, index) => ({
+              ...point,
+              component_id: rows[index]?.component_id ?? null,
+            })),
+            contacts: savedLayout?.contacts ?? [],
+          }
+          setSavedLayout(await projectsApi.saveMechanical(projectId, layout))
+          setProjectSaved(true)
         }
         setAnalysis(await mechanicalApi.analyze(built.input))
         setContactsAnalysis(null)
@@ -64,6 +116,17 @@ export default function MechanicalPage() {
         if ('invalid' in built) {
           setError(`${t('mechanical.invalidNumber')} ${built.invalid.join(', ')}`)
           return
+        }
+        if (projectId) {
+          const layout: ProjectMechanicalData = {
+            mass_points: built.input.mass_points.map((point, index) => ({
+              ...point,
+              component_id: rows[index]?.component_id ?? null,
+            })),
+            contacts: built.input.contacts,
+          }
+          setSavedLayout(await projectsApi.saveMechanical(projectId, layout))
+          setProjectSaved(true)
         }
         setContactsAnalysis(await mechanicalApi.analyzeContacts(built.input))
         setAnalysis(null)
@@ -130,6 +193,11 @@ export default function MechanicalPage() {
         {t('mechanical.title')}
       </h1>
       <p className="text-sm text-slate-700">{t('mechanical.intro')}</p>
+      {projectId && (
+        <p role="status" className="rounded border border-slate-200 bg-white p-3 text-sm text-slate-700">
+          {projectLoading ? t('mechanical.projectLoading') : projectSaved ? t('mechanical.projectSaved') : t('mechanical.projectContext')}
+        </p>
+      )}
       <fieldset className="flex flex-wrap gap-4 text-sm">
         <legend className="font-medium">{t('mechanical.mode')}</legend>
         {(['rectangle', 'contacts'] as const).map((m) => (
@@ -215,7 +283,7 @@ export default function MechanicalPage() {
       </div>
       )}
 
-      <button type="button" disabled={busy} onClick={run}
+      <button type="button" disabled={busy || projectLoading} onClick={run}
         className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-50">
         {busy ? t('mechanical.analyzing') : t('mechanical.analyze')}
       </button>
