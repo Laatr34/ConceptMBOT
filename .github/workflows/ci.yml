@@ -18,7 +18,6 @@ jobs:
           python-version: "3.13"
       - run: pip install -e ".[dev]"
       - run: ruff check .
-      - run: ruff format --diff app/api/battery.py || true
       - run: ruff format --check .
       - run: mypy app
       - run: pytest -q
