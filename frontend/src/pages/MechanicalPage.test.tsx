@@ -203,5 +203,48 @@ describe('MechanicalPage', () => {
       expect(screen.getByText('0.05 m')).toBeInTheDocument()
       expect(screen.getByRole('heading', { name: 'Static stability: Stable' })).toBeInTheDocument()
     })
+
+    it('loads and saves the mechanical layout of the selected project', async () => {
+      const projectId = '00000000-0000-0000-0000-000000000123'
+      const layout = {
+        mass_points: [{
+          name: 'Battery', component_id: null, mass_kg: 10,
+          x_m: -0.05, y_m: 0, z_m: 0.2,
+        }],
+        contacts: [
+          { name: 'left_wheel', x_m: 0, y_m: 0.15 },
+          { name: 'right_wheel', x_m: 0, y_m: -0.15 },
+          { name: 'caster', x_m: -0.2, y_m: 0 },
+        ],
+      }
+      window.history.replaceState({}, '', `/mechanical?projectId=${projectId}`)
+      const fetchMock = vi.fn().mockImplementation((url: string, init?: RequestInit) => {
+        if (url === `/api/projects/${projectId}/mechanical` && !init?.method) {
+          return Promise.resolve({ ok: true, status: 200, json: async () => layout, text: async () => '' })
+        }
+        if (url === `/api/projects/${projectId}/mechanical` && init?.method === 'PUT') {
+          return Promise.resolve({ ok: true, status: 200, json: async () => layout, text: async () => '' })
+        }
+        return Promise.resolve({
+          ok: true, status: 200, json: async () => contactsResponse, text: async () => '',
+        })
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      render(<MechanicalPage />)
+      await screen.findByDisplayValue('10')
+      await userEvent.click(screen.getByRole('button', { name: 'Analyze' }))
+      await screen.findByTestId('support-polygon')
+
+      expect(fetchMock.mock.calls[0][0]).toBe(`/api/projects/${projectId}/mechanical`)
+      expect(fetchMock.mock.calls[1][0]).toBe(`/api/projects/${projectId}/mechanical`)
+      expect(fetchMock.mock.calls[1][1].method).toBe('PUT')
+      const saved = JSON.parse(fetchMock.mock.calls[1][1].body)
+      expect(saved.mass_points[0]).toEqual(layout.mass_points[0])
+      expect(saved.contacts).toEqual(layout.contacts)
+      expect(fetchMock.mock.calls[2][0]).toBe('/api/mechanical/analyze-contacts')
+      expect(screen.getByText('Mechanical layout saved to the project.')).toBeInTheDocument()
+      window.history.replaceState({}, '', '/')
+    })
   })
 })
